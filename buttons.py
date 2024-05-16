@@ -2,7 +2,8 @@
 import os
 from tkinter import Button
 import tkinter
-from file_operations import nuevo, abrir, guardar, guardar_como
+from file_operations import nuevo, abrir, guardar, guardar_como, run_command
+
 
 # Lista para mantener referencias globales a las imágenes
 images = []
@@ -13,7 +14,7 @@ def resize_image(image_path, width, height):
     images.append(resized_image)  # Mantener referencia global
     return resized_image
 
-def create_buttons(button_frame, root, mensaje, texto, pantalla_salida):
+def create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_lexico):
 
     # Rutas de las imagenes
     img_new_path = os.path.abspath("img/new.png")
@@ -36,19 +37,7 @@ def create_buttons(button_frame, root, mensaje, texto, pantalla_salida):
     button_save.pack(side='left', padx=5)
     button_save_as = Button(button_frame, image=img_save_as, command=lambda: guardar_como(root, mensaje, texto))
     button_save_as.pack(side='left', padx=5)
-
-    def mostrar_mensaje_en_rojo(mensaje):
-        pantalla_salida.config(state='normal', fg='red')  # Habilitar la edición para agregar texto en rojo
-        pantalla_salida.insert('end', mensaje + '\n')  # Insertar el mensaje y un salto de línea
-        pantalla_salida.config(state='disabled')  # Deshabilitar la edición para que sea solo de lectura
-        pantalla_salida.see('end')  # Desplazar la pantalla hacia abajo para mostrar el mensaje más reciente
-
-    def run_command():
-        guardar(root, mensaje, texto)
-        mensaje.set("Corriendo")
-        mostrar_mensaje_en_rojo("¡Corriendo el programa!")
-
-    button_run = Button(button_frame, image=img_run, command= run_command)
+    button_run = Button(button_frame, image=img_run, command=lambda: run_command(root, mensaje, texto, frame_lexico, pantalla_errores))
     button_run.pack(side='left', padx=5)
 
     

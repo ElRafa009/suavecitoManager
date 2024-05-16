@@ -1,69 +1,7 @@
 from tkinter import Frame, Scrollbar, StringVar, Tk, Text, Label, ttk
+from file_operations import highlight_syntax
 from menu import create_menu
 from buttons import create_buttons
-
-def highlight_syntax(texto):
-    
-    keywords = ['int', 'float', 'if', 'else', 'for', 'while', 'do']
-
-    # Borrar estilos anteriores
-    texto.tag_remove('keyword', '1.0', 'end')
-    texto.tag_remove('string', '1.0', 'end')
-    texto.tag_remove('comment_line', '1.0', 'end')
-    texto.tag_remove('comment_block', '1.0', 'end')
-
-    # Resaltado de palabras clave
-    for kw in keywords:
-        start = '1.0'
-        while True:
-            start = texto.search(kw, start, stopindex='end', regexp=True, count='1')
-            if not start:
-                break
-            end = f"{start}+{len(kw)}c"
-            texto.tag_add('keyword', start, end)
-            start = end
-
-    # Resaltado de texto entre comillas
-    start = '1.0'
-    while True:
-        start = texto.search('"', start, stopindex='end', count='1')
-        if not start:
-            break
-        end = texto.search('"', f"{start}+1c", stopindex='end', count='1')
-        if not end:
-            break
-        texto.tag_add('string', start, f"{end}+1c")
-        start = f"{end}+1c"
-
-    # Resaltado de comentarios de línea (//)
-    start = '1.0'
-    while True:
-        start = texto.search('//', start, stopindex='end', count='1')
-        if not start:
-            break
-        end = texto.search('\n', f"{start} lineend", stopindex='end', count='1')
-        if not end:
-            end = 'end'
-        texto.tag_add('comment_line', start, end)
-        start = end
-
-    # Resaltado de comentarios de bloque (/* ... */)
-    start = '1.0'
-    while True:
-        start = texto.search('/*', start, stopindex='end', count='1')
-        if not start:
-            break
-        end = texto.search('*/', f"{start}+2c", stopindex='end', count='1')
-        if not end:
-            end = 'end'
-        texto.tag_add('comment_block', start, end+'+2c')
-        start = end+'+2c'
-
-    # Estilos para tags
-    texto.tag_configure('keyword', foreground='blue')
-    texto.tag_configure('string', foreground='#ba6b2b')
-    texto.tag_configure('comment_line', foreground='green')
-    texto.tag_configure('comment_block', foreground='green')
 
 def create_editor():
     root = Tk()
@@ -105,7 +43,6 @@ def create_editor():
     # Pestaña para Análisis Léxico
     frame_lexico = ttk.Frame(tab_control_analisis)
     tab_control_analisis.add(frame_lexico, text='Análisis Léxico')
-    # Aquí se debe agregar el análisis léxico
 
     # Pestaña para Análisis Sintáctico
     frame_sintactico = ttk.Frame(tab_control_analisis)
@@ -144,7 +81,7 @@ def create_editor():
 
     # Menu superior y botones
     create_menu(root, mensaje, texto)
-    create_buttons(button_frame, root, mensaje, texto, pantalla_resultados)
+    create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_lexico)
 
     # Bucle de la aplicacion
     root.mainloop()
