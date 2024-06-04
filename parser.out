@@ -1,0 +1,1948 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    FALSE
+    NOT
+    POWER
+    TB
+    TRUE
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> PROGRAM LBRACE list_decl list_sent RBRACE
+Rule 2     list_decl -> list_decl decl
+Rule 3     list_decl -> decl
+Rule 4     list_decl -> empty
+Rule 5     decl -> tipo list_id SEMICOLON
+Rule 6     tipo -> INT
+Rule 7     tipo -> FLOAT
+Rule 8     tipo -> BOOL
+Rule 9     list_id -> list_id COMMA IDENTIFIER
+Rule 10    list_id -> IDENTIFIER
+Rule 11    list_sent -> list_sent sent
+Rule 12    list_sent -> sent
+Rule 13    list_sent -> empty
+Rule 14    sent -> sent_if
+Rule 15    sent -> sent_while
+Rule 16    sent -> sent_do
+Rule 17    sent -> sent_read
+Rule 18    sent -> sent_write
+Rule 19    sent -> bloque
+Rule 20    sent -> sent_assign
+Rule 21    sent -> BREAK
+Rule 22    sent_if -> IF LPAREN exp_bool RPAREN bloque else_part FI
+Rule 23    else_part -> ELSE bloque
+Rule 24    else_part -> empty
+Rule 25    sent_while -> WHILE LPAREN exp_bool RPAREN bloque
+Rule 26    sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON
+Rule 27    sent_read -> READ IDENTIFIER SEMICOLON
+Rule 28    sent_write -> WRITE exp_bool SEMICOLON
+Rule 29    bloque -> LBRACE list_sent RBRACE
+Rule 30    sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON
+Rule 31    exp_bool -> exp_bool OR comb
+Rule 32    exp_bool -> comb
+Rule 33    comb -> comb AND igualdad
+Rule 34    comb -> igualdad
+Rule 35    igualdad -> igualdad EQ rel
+Rule 36    igualdad -> igualdad NE rel
+Rule 37    igualdad -> rel
+Rule 38    rel -> expr op_rel expr
+Rule 39    op_rel -> LT
+Rule 40    op_rel -> LE
+Rule 41    op_rel -> GT
+Rule 42    op_rel -> GE
+Rule 43    expr -> expr PLUS term
+Rule 44    expr -> expr MINUS term
+Rule 45    expr -> term
+Rule 46    term -> term TIMES unario
+Rule 47    term -> term DIVIDE unario
+Rule 48    term -> unario
+Rule 49    unario -> PLUS unario
+Rule 50    unario -> MINUS unario
+Rule 51    unario -> factor
+Rule 52    factor -> NUMBER
+Rule 53    factor -> IDENTIFIER
+Rule 54    factor -> LPAREN exp_bool RPAREN
+Rule 55    empty -> <empty>
+
+Terminals, with rules where they appear
+
+AND                  : 33
+ASSIGN               : 30
+BOOL                 : 8
+BREAK                : 21
+COMMA                : 9
+DIVIDE               : 47
+DO                   : 26
+ELSE                 : 23
+EQ                   : 35
+FALSE                : 
+FI                   : 22
+FLOAT                : 7
+GE                   : 42
+GT                   : 41
+IDENTIFIER           : 9 10 27 30 53
+IF                   : 22
+INT                  : 6
+LBRACE               : 1 29
+LE                   : 40
+LPAREN               : 22 25 26 54
+LT                   : 39
+MINUS                : 44 50
+NE                   : 36
+NOT                  : 
+NUMBER               : 52
+OR                   : 31
+PLUS                 : 43 49
+POWER                : 
+PROGRAM              : 1
+RBRACE               : 1 29
+READ                 : 27
+RPAREN               : 22 25 26 54
+SEMICOLON            : 5 26 27 28 30
+TB                   : 
+TIMES                : 46
+TRUE                 : 
+UNTIL                : 26
+WHILE                : 25
+WRITE                : 28
+error                : 
+
+Nonterminals, with rules where they appear
+
+bloque               : 19 22 23 25 26
+comb                 : 31 32 33
+decl                 : 2 3
+else_part            : 22
+empty                : 4 13 24
+exp_bool             : 22 25 26 28 30 31 54
+expr                 : 38 38 43 44
+factor               : 51
+igualdad             : 33 34 35 36
+list_decl            : 1 2
+list_id              : 5 9
+list_sent            : 1 11 29
+op_rel               : 38
+program              : 0
+rel                  : 35 36 37
+sent                 : 11 12
+sent_assign          : 20
+sent_do              : 16
+sent_if              : 14
+sent_read            : 17
+sent_while           : 15
+sent_write           : 18
+term                 : 43 44 45 46 47
+tipo                 : 5
+unario               : 46 47 48 49 50
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . PROGRAM LBRACE list_decl list_sent RBRACE
+
+    PROGRAM         shift and go to state 2
+
+    program                        shift and go to state 1
+
+state 1
+
+    (0) S' -> program .
+
+
+
+state 2
+
+    (1) program -> PROGRAM . LBRACE list_decl list_sent RBRACE
+
+    LBRACE          shift and go to state 3
+
+
+state 3
+
+    (1) program -> PROGRAM LBRACE . list_decl list_sent RBRACE
+    (2) list_decl -> . list_decl decl
+    (3) list_decl -> . decl
+    (4) list_decl -> . empty
+    (5) decl -> . tipo list_id SEMICOLON
+    (55) empty -> .
+    (6) tipo -> . INT
+    (7) tipo -> . FLOAT
+    (8) tipo -> . BOOL
+
+  ! shift/reduce conflict for INT resolved as shift
+  ! shift/reduce conflict for FLOAT resolved as shift
+  ! shift/reduce conflict for BOOL resolved as shift
+    BREAK           reduce using rule 55 (empty -> .)
+    IF              reduce using rule 55 (empty -> .)
+    WHILE           reduce using rule 55 (empty -> .)
+    DO              reduce using rule 55 (empty -> .)
+    READ            reduce using rule 55 (empty -> .)
+    WRITE           reduce using rule 55 (empty -> .)
+    LBRACE          reduce using rule 55 (empty -> .)
+    IDENTIFIER      reduce using rule 55 (empty -> .)
+    RBRACE          reduce using rule 55 (empty -> .)
+    INT             shift and go to state 8
+    FLOAT           shift and go to state 9
+    BOOL            shift and go to state 10
+
+  ! INT             [ reduce using rule 55 (empty -> .) ]
+  ! FLOAT           [ reduce using rule 55 (empty -> .) ]
+  ! BOOL            [ reduce using rule 55 (empty -> .) ]
+
+    list_decl                      shift and go to state 4
+    decl                           shift and go to state 5
+    empty                          shift and go to state 6
+    tipo                           shift and go to state 7
+
+state 4
+
+    (1) program -> PROGRAM LBRACE list_decl . list_sent RBRACE
+    (2) list_decl -> list_decl . decl
+    (11) list_sent -> . list_sent sent
+    (12) list_sent -> . sent
+    (13) list_sent -> . empty
+    (5) decl -> . tipo list_id SEMICOLON
+    (14) sent -> . sent_if
+    (15) sent -> . sent_while
+    (16) sent -> . sent_do
+    (17) sent -> . sent_read
+    (18) sent -> . sent_write
+    (19) sent -> . bloque
+    (20) sent -> . sent_assign
+    (21) sent -> . BREAK
+    (55) empty -> .
+    (6) tipo -> . INT
+    (7) tipo -> . FLOAT
+    (8) tipo -> . BOOL
+    (22) sent_if -> . IF LPAREN exp_bool RPAREN bloque else_part FI
+    (25) sent_while -> . WHILE LPAREN exp_bool RPAREN bloque
+    (26) sent_do -> . DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON
+    (27) sent_read -> . READ IDENTIFIER SEMICOLON
+    (28) sent_write -> . WRITE exp_bool SEMICOLON
+    (29) bloque -> . LBRACE list_sent RBRACE
+    (30) sent_assign -> . IDENTIFIER ASSIGN exp_bool SEMICOLON
+
+  ! shift/reduce conflict for BREAK resolved as shift
+  ! shift/reduce conflict for IF resolved as shift
+  ! shift/reduce conflict for WHILE resolved as shift
+  ! shift/reduce conflict for DO resolved as shift
+  ! shift/reduce conflict for READ resolved as shift
+  ! shift/reduce conflict for WRITE resolved as shift
+  ! shift/reduce conflict for LBRACE resolved as shift
+  ! shift/reduce conflict for IDENTIFIER resolved as shift
+    BREAK           shift and go to state 23
+    RBRACE          reduce using rule 55 (empty -> .)
+    INT             shift and go to state 8
+    FLOAT           shift and go to state 9
+    BOOL            shift and go to state 10
+    IF              shift and go to state 24
+    WHILE           shift and go to state 25
+    DO              shift and go to state 26
+    READ            shift and go to state 27
+    WRITE           shift and go to state 29
+    LBRACE          shift and go to state 11
+    IDENTIFIER      shift and go to state 28
+
+  ! BREAK           [ reduce using rule 55 (empty -> .) ]
+  ! IF              [ reduce using rule 55 (empty -> .) ]
+  ! WHILE           [ reduce using rule 55 (empty -> .) ]
+  ! DO              [ reduce using rule 55 (empty -> .) ]
+  ! READ            [ reduce using rule 55 (empty -> .) ]
+  ! WRITE           [ reduce using rule 55 (empty -> .) ]
+  ! LBRACE          [ reduce using rule 55 (empty -> .) ]
+  ! IDENTIFIER      [ reduce using rule 55 (empty -> .) ]
+
+    list_sent                      shift and go to state 12
+    decl                           shift and go to state 13
+    sent                           shift and go to state 14
+    empty                          shift and go to state 15
+    tipo                           shift and go to state 7
+    sent_if                        shift and go to state 16
+    sent_while                     shift and go to state 17
+    sent_do                        shift and go to state 18
+    sent_read                      shift and go to state 19
+    sent_write                     shift and go to state 20
+    bloque                         shift and go to state 21
+    sent_assign                    shift and go to state 22
+
+state 5
+
+    (3) list_decl -> decl .
+
+    BREAK           reduce using rule 3 (list_decl -> decl .)
+    INT             reduce using rule 3 (list_decl -> decl .)
+    FLOAT           reduce using rule 3 (list_decl -> decl .)
+    BOOL            reduce using rule 3 (list_decl -> decl .)
+    IF              reduce using rule 3 (list_decl -> decl .)
+    WHILE           reduce using rule 3 (list_decl -> decl .)
+    DO              reduce using rule 3 (list_decl -> decl .)
+    READ            reduce using rule 3 (list_decl -> decl .)
+    WRITE           reduce using rule 3 (list_decl -> decl .)
+    LBRACE          reduce using rule 3 (list_decl -> decl .)
+    IDENTIFIER      reduce using rule 3 (list_decl -> decl .)
+    RBRACE          reduce using rule 3 (list_decl -> decl .)
+
+
+state 6
+
+    (4) list_decl -> empty .
+
+    BREAK           reduce using rule 4 (list_decl -> empty .)
+    INT             reduce using rule 4 (list_decl -> empty .)
+    FLOAT           reduce using rule 4 (list_decl -> empty .)
+    BOOL            reduce using rule 4 (list_decl -> empty .)
+    IF              reduce using rule 4 (list_decl -> empty .)
+    WHILE           reduce using rule 4 (list_decl -> empty .)
+    DO              reduce using rule 4 (list_decl -> empty .)
+    READ            reduce using rule 4 (list_decl -> empty .)
+    WRITE           reduce using rule 4 (list_decl -> empty .)
+    LBRACE          reduce using rule 4 (list_decl -> empty .)
+    IDENTIFIER      reduce using rule 4 (list_decl -> empty .)
+    RBRACE          reduce using rule 4 (list_decl -> empty .)
+
+
+state 7
+
+    (5) decl -> tipo . list_id SEMICOLON
+    (9) list_id -> . list_id COMMA IDENTIFIER
+    (10) list_id -> . IDENTIFIER
+
+    IDENTIFIER      shift and go to state 31
+
+    list_id                        shift and go to state 30
+
+state 8
+
+    (6) tipo -> INT .
+
+    IDENTIFIER      reduce using rule 6 (tipo -> INT .)
+
+
+state 9
+
+    (7) tipo -> FLOAT .
+
+    IDENTIFIER      reduce using rule 7 (tipo -> FLOAT .)
+
+
+state 10
+
+    (8) tipo -> BOOL .
+
+    IDENTIFIER      reduce using rule 8 (tipo -> BOOL .)
+
+
+state 11
+
+    (29) bloque -> LBRACE . list_sent RBRACE
+    (11) list_sent -> . list_sent sent
+    (12) list_sent -> . sent
+    (13) list_sent -> . empty
+    (14) sent -> . sent_if
+    (15) sent -> . sent_while
+    (16) sent -> . sent_do
+    (17) sent -> . sent_read
+    (18) sent -> . sent_write
+    (19) sent -> . bloque
+    (20) sent -> . sent_assign
+    (21) sent -> . BREAK
+    (55) empty -> .
+    (22) sent_if -> . IF LPAREN exp_bool RPAREN bloque else_part FI
+    (25) sent_while -> . WHILE LPAREN exp_bool RPAREN bloque
+    (26) sent_do -> . DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON
+    (27) sent_read -> . READ IDENTIFIER SEMICOLON
+    (28) sent_write -> . WRITE exp_bool SEMICOLON
+    (29) bloque -> . LBRACE list_sent RBRACE
+    (30) sent_assign -> . IDENTIFIER ASSIGN exp_bool SEMICOLON
+
+  ! shift/reduce conflict for BREAK resolved as shift
+  ! shift/reduce conflict for IF resolved as shift
+  ! shift/reduce conflict for WHILE resolved as shift
+  ! shift/reduce conflict for DO resolved as shift
+  ! shift/reduce conflict for READ resolved as shift
+  ! shift/reduce conflict for WRITE resolved as shift
+  ! shift/reduce conflict for LBRACE resolved as shift
+  ! shift/reduce conflict for IDENTIFIER resolved as shift
+    BREAK           shift and go to state 23
+    RBRACE          reduce using rule 55 (empty -> .)
+    IF              shift and go to state 24
+    WHILE           shift and go to state 25
+    DO              shift and go to state 26
+    READ            shift and go to state 27
+    WRITE           shift and go to state 29
+    LBRACE          shift and go to state 11
+    IDENTIFIER      shift and go to state 28
+
+  ! BREAK           [ reduce using rule 55 (empty -> .) ]
+  ! IF              [ reduce using rule 55 (empty -> .) ]
+  ! WHILE           [ reduce using rule 55 (empty -> .) ]
+  ! DO              [ reduce using rule 55 (empty -> .) ]
+  ! READ            [ reduce using rule 55 (empty -> .) ]
+  ! WRITE           [ reduce using rule 55 (empty -> .) ]
+  ! LBRACE          [ reduce using rule 55 (empty -> .) ]
+  ! IDENTIFIER      [ reduce using rule 55 (empty -> .) ]
+
+    list_sent                      shift and go to state 32
+    sent                           shift and go to state 14
+    empty                          shift and go to state 15
+    sent_if                        shift and go to state 16
+    sent_while                     shift and go to state 17
+    sent_do                        shift and go to state 18
+    sent_read                      shift and go to state 19
+    sent_write                     shift and go to state 20
+    bloque                         shift and go to state 21
+    sent_assign                    shift and go to state 22
+
+state 12
+
+    (1) program -> PROGRAM LBRACE list_decl list_sent . RBRACE
+    (11) list_sent -> list_sent . sent
+    (14) sent -> . sent_if
+    (15) sent -> . sent_while
+    (16) sent -> . sent_do
+    (17) sent -> . sent_read
+    (18) sent -> . sent_write
+    (19) sent -> . bloque
+    (20) sent -> . sent_assign
+    (21) sent -> . BREAK
+    (22) sent_if -> . IF LPAREN exp_bool RPAREN bloque else_part FI
+    (25) sent_while -> . WHILE LPAREN exp_bool RPAREN bloque
+    (26) sent_do -> . DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON
+    (27) sent_read -> . READ IDENTIFIER SEMICOLON
+    (28) sent_write -> . WRITE exp_bool SEMICOLON
+    (29) bloque -> . LBRACE list_sent RBRACE
+    (30) sent_assign -> . IDENTIFIER ASSIGN exp_bool SEMICOLON
+
+    RBRACE          shift and go to state 33
+    BREAK           shift and go to state 23
+    IF              shift and go to state 24
+    WHILE           shift and go to state 25
+    DO              shift and go to state 26
+    READ            shift and go to state 27
+    WRITE           shift and go to state 29
+    LBRACE          shift and go to state 11
+    IDENTIFIER      shift and go to state 28
+
+    sent                           shift and go to state 34
+    sent_if                        shift and go to state 16
+    sent_while                     shift and go to state 17
+    sent_do                        shift and go to state 18
+    sent_read                      shift and go to state 19
+    sent_write                     shift and go to state 20
+    bloque                         shift and go to state 21
+    sent_assign                    shift and go to state 22
+
+state 13
+
+    (2) list_decl -> list_decl decl .
+
+    BREAK           reduce using rule 2 (list_decl -> list_decl decl .)
+    INT             reduce using rule 2 (list_decl -> list_decl decl .)
+    FLOAT           reduce using rule 2 (list_decl -> list_decl decl .)
+    BOOL            reduce using rule 2 (list_decl -> list_decl decl .)
+    IF              reduce using rule 2 (list_decl -> list_decl decl .)
+    WHILE           reduce using rule 2 (list_decl -> list_decl decl .)
+    DO              reduce using rule 2 (list_decl -> list_decl decl .)
+    READ            reduce using rule 2 (list_decl -> list_decl decl .)
+    WRITE           reduce using rule 2 (list_decl -> list_decl decl .)
+    LBRACE          reduce using rule 2 (list_decl -> list_decl decl .)
+    IDENTIFIER      reduce using rule 2 (list_decl -> list_decl decl .)
+    RBRACE          reduce using rule 2 (list_decl -> list_decl decl .)
+
+
+state 14
+
+    (12) list_sent -> sent .
+
+    RBRACE          reduce using rule 12 (list_sent -> sent .)
+    BREAK           reduce using rule 12 (list_sent -> sent .)
+    IF              reduce using rule 12 (list_sent -> sent .)
+    WHILE           reduce using rule 12 (list_sent -> sent .)
+    DO              reduce using rule 12 (list_sent -> sent .)
+    READ            reduce using rule 12 (list_sent -> sent .)
+    WRITE           reduce using rule 12 (list_sent -> sent .)
+    LBRACE          reduce using rule 12 (list_sent -> sent .)
+    IDENTIFIER      reduce using rule 12 (list_sent -> sent .)
+
+
+state 15
+
+    (13) list_sent -> empty .
+
+    RBRACE          reduce using rule 13 (list_sent -> empty .)
+    BREAK           reduce using rule 13 (list_sent -> empty .)
+    IF              reduce using rule 13 (list_sent -> empty .)
+    WHILE           reduce using rule 13 (list_sent -> empty .)
+    DO              reduce using rule 13 (list_sent -> empty .)
+    READ            reduce using rule 13 (list_sent -> empty .)
+    WRITE           reduce using rule 13 (list_sent -> empty .)
+    LBRACE          reduce using rule 13 (list_sent -> empty .)
+    IDENTIFIER      reduce using rule 13 (list_sent -> empty .)
+
+
+state 16
+
+    (14) sent -> sent_if .
+
+    RBRACE          reduce using rule 14 (sent -> sent_if .)
+    BREAK           reduce using rule 14 (sent -> sent_if .)
+    IF              reduce using rule 14 (sent -> sent_if .)
+    WHILE           reduce using rule 14 (sent -> sent_if .)
+    DO              reduce using rule 14 (sent -> sent_if .)
+    READ            reduce using rule 14 (sent -> sent_if .)
+    WRITE           reduce using rule 14 (sent -> sent_if .)
+    LBRACE          reduce using rule 14 (sent -> sent_if .)
+    IDENTIFIER      reduce using rule 14 (sent -> sent_if .)
+
+
+state 17
+
+    (15) sent -> sent_while .
+
+    RBRACE          reduce using rule 15 (sent -> sent_while .)
+    BREAK           reduce using rule 15 (sent -> sent_while .)
+    IF              reduce using rule 15 (sent -> sent_while .)
+    WHILE           reduce using rule 15 (sent -> sent_while .)
+    DO              reduce using rule 15 (sent -> sent_while .)
+    READ            reduce using rule 15 (sent -> sent_while .)
+    WRITE           reduce using rule 15 (sent -> sent_while .)
+    LBRACE          reduce using rule 15 (sent -> sent_while .)
+    IDENTIFIER      reduce using rule 15 (sent -> sent_while .)
+
+
+state 18
+
+    (16) sent -> sent_do .
+
+    RBRACE          reduce using rule 16 (sent -> sent_do .)
+    BREAK           reduce using rule 16 (sent -> sent_do .)
+    IF              reduce using rule 16 (sent -> sent_do .)
+    WHILE           reduce using rule 16 (sent -> sent_do .)
+    DO              reduce using rule 16 (sent -> sent_do .)
+    READ            reduce using rule 16 (sent -> sent_do .)
+    WRITE           reduce using rule 16 (sent -> sent_do .)
+    LBRACE          reduce using rule 16 (sent -> sent_do .)
+    IDENTIFIER      reduce using rule 16 (sent -> sent_do .)
+
+
+state 19
+
+    (17) sent -> sent_read .
+
+    RBRACE          reduce using rule 17 (sent -> sent_read .)
+    BREAK           reduce using rule 17 (sent -> sent_read .)
+    IF              reduce using rule 17 (sent -> sent_read .)
+    WHILE           reduce using rule 17 (sent -> sent_read .)
+    DO              reduce using rule 17 (sent -> sent_read .)
+    READ            reduce using rule 17 (sent -> sent_read .)
+    WRITE           reduce using rule 17 (sent -> sent_read .)
+    LBRACE          reduce using rule 17 (sent -> sent_read .)
+    IDENTIFIER      reduce using rule 17 (sent -> sent_read .)
+
+
+state 20
+
+    (18) sent -> sent_write .
+
+    RBRACE          reduce using rule 18 (sent -> sent_write .)
+    BREAK           reduce using rule 18 (sent -> sent_write .)
+    IF              reduce using rule 18 (sent -> sent_write .)
+    WHILE           reduce using rule 18 (sent -> sent_write .)
+    DO              reduce using rule 18 (sent -> sent_write .)
+    READ            reduce using rule 18 (sent -> sent_write .)
+    WRITE           reduce using rule 18 (sent -> sent_write .)
+    LBRACE          reduce using rule 18 (sent -> sent_write .)
+    IDENTIFIER      reduce using rule 18 (sent -> sent_write .)
+
+
+state 21
+
+    (19) sent -> bloque .
+
+    RBRACE          reduce using rule 19 (sent -> bloque .)
+    BREAK           reduce using rule 19 (sent -> bloque .)
+    IF              reduce using rule 19 (sent -> bloque .)
+    WHILE           reduce using rule 19 (sent -> bloque .)
+    DO              reduce using rule 19 (sent -> bloque .)
+    READ            reduce using rule 19 (sent -> bloque .)
+    WRITE           reduce using rule 19 (sent -> bloque .)
+    LBRACE          reduce using rule 19 (sent -> bloque .)
+    IDENTIFIER      reduce using rule 19 (sent -> bloque .)
+
+
+state 22
+
+    (20) sent -> sent_assign .
+
+    RBRACE          reduce using rule 20 (sent -> sent_assign .)
+    BREAK           reduce using rule 20 (sent -> sent_assign .)
+    IF              reduce using rule 20 (sent -> sent_assign .)
+    WHILE           reduce using rule 20 (sent -> sent_assign .)
+    DO              reduce using rule 20 (sent -> sent_assign .)
+    READ            reduce using rule 20 (sent -> sent_assign .)
+    WRITE           reduce using rule 20 (sent -> sent_assign .)
+    LBRACE          reduce using rule 20 (sent -> sent_assign .)
+    IDENTIFIER      reduce using rule 20 (sent -> sent_assign .)
+
+
+state 23
+
+    (21) sent -> BREAK .
+
+    RBRACE          reduce using rule 21 (sent -> BREAK .)
+    BREAK           reduce using rule 21 (sent -> BREAK .)
+    IF              reduce using rule 21 (sent -> BREAK .)
+    WHILE           reduce using rule 21 (sent -> BREAK .)
+    DO              reduce using rule 21 (sent -> BREAK .)
+    READ            reduce using rule 21 (sent -> BREAK .)
+    WRITE           reduce using rule 21 (sent -> BREAK .)
+    LBRACE          reduce using rule 21 (sent -> BREAK .)
+    IDENTIFIER      reduce using rule 21 (sent -> BREAK .)
+
+
+state 24
+
+    (22) sent_if -> IF . LPAREN exp_bool RPAREN bloque else_part FI
+
+    LPAREN          shift and go to state 35
+
+
+state 25
+
+    (25) sent_while -> WHILE . LPAREN exp_bool RPAREN bloque
+
+    LPAREN          shift and go to state 36
+
+
+state 26
+
+    (26) sent_do -> DO . bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON
+    (29) bloque -> . LBRACE list_sent RBRACE
+
+    LBRACE          shift and go to state 11
+
+    bloque                         shift and go to state 37
+
+state 27
+
+    (27) sent_read -> READ . IDENTIFIER SEMICOLON
+
+    IDENTIFIER      shift and go to state 38
+
+
+state 28
+
+    (30) sent_assign -> IDENTIFIER . ASSIGN exp_bool SEMICOLON
+
+    ASSIGN          shift and go to state 39
+
+
+state 29
+
+    (28) sent_write -> WRITE . exp_bool SEMICOLON
+    (31) exp_bool -> . exp_bool OR comb
+    (32) exp_bool -> . comb
+    (33) comb -> . comb AND igualdad
+    (34) comb -> . igualdad
+    (35) igualdad -> . igualdad EQ rel
+    (36) igualdad -> . igualdad NE rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (43) expr -> . expr PLUS term
+    (44) expr -> . expr MINUS term
+    (45) expr -> . term
+    (46) term -> . term TIMES unario
+    (47) term -> . term DIVIDE unario
+    (48) term -> . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    exp_bool                       shift and go to state 40
+    comb                           shift and go to state 41
+    igualdad                       shift and go to state 42
+    rel                            shift and go to state 43
+    expr                           shift and go to state 44
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 49
+
+state 30
+
+    (5) decl -> tipo list_id . SEMICOLON
+    (9) list_id -> list_id . COMMA IDENTIFIER
+
+    SEMICOLON       shift and go to state 53
+    COMMA           shift and go to state 54
+
+
+state 31
+
+    (10) list_id -> IDENTIFIER .
+
+    SEMICOLON       reduce using rule 10 (list_id -> IDENTIFIER .)
+    COMMA           reduce using rule 10 (list_id -> IDENTIFIER .)
+
+
+state 32
+
+    (29) bloque -> LBRACE list_sent . RBRACE
+    (11) list_sent -> list_sent . sent
+    (14) sent -> . sent_if
+    (15) sent -> . sent_while
+    (16) sent -> . sent_do
+    (17) sent -> . sent_read
+    (18) sent -> . sent_write
+    (19) sent -> . bloque
+    (20) sent -> . sent_assign
+    (21) sent -> . BREAK
+    (22) sent_if -> . IF LPAREN exp_bool RPAREN bloque else_part FI
+    (25) sent_while -> . WHILE LPAREN exp_bool RPAREN bloque
+    (26) sent_do -> . DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON
+    (27) sent_read -> . READ IDENTIFIER SEMICOLON
+    (28) sent_write -> . WRITE exp_bool SEMICOLON
+    (29) bloque -> . LBRACE list_sent RBRACE
+    (30) sent_assign -> . IDENTIFIER ASSIGN exp_bool SEMICOLON
+
+    RBRACE          shift and go to state 55
+    BREAK           shift and go to state 23
+    IF              shift and go to state 24
+    WHILE           shift and go to state 25
+    DO              shift and go to state 26
+    READ            shift and go to state 27
+    WRITE           shift and go to state 29
+    LBRACE          shift and go to state 11
+    IDENTIFIER      shift and go to state 28
+
+    sent                           shift and go to state 34
+    sent_if                        shift and go to state 16
+    sent_while                     shift and go to state 17
+    sent_do                        shift and go to state 18
+    sent_read                      shift and go to state 19
+    sent_write                     shift and go to state 20
+    bloque                         shift and go to state 21
+    sent_assign                    shift and go to state 22
+
+state 33
+
+    (1) program -> PROGRAM LBRACE list_decl list_sent RBRACE .
+
+    $end            reduce using rule 1 (program -> PROGRAM LBRACE list_decl list_sent RBRACE .)
+
+
+state 34
+
+    (11) list_sent -> list_sent sent .
+
+    RBRACE          reduce using rule 11 (list_sent -> list_sent sent .)
+    BREAK           reduce using rule 11 (list_sent -> list_sent sent .)
+    IF              reduce using rule 11 (list_sent -> list_sent sent .)
+    WHILE           reduce using rule 11 (list_sent -> list_sent sent .)
+    DO              reduce using rule 11 (list_sent -> list_sent sent .)
+    READ            reduce using rule 11 (list_sent -> list_sent sent .)
+    WRITE           reduce using rule 11 (list_sent -> list_sent sent .)
+    LBRACE          reduce using rule 11 (list_sent -> list_sent sent .)
+    IDENTIFIER      reduce using rule 11 (list_sent -> list_sent sent .)
+
+
+state 35
+
+    (22) sent_if -> IF LPAREN . exp_bool RPAREN bloque else_part FI
+    (31) exp_bool -> . exp_bool OR comb
+    (32) exp_bool -> . comb
+    (33) comb -> . comb AND igualdad
+    (34) comb -> . igualdad
+    (35) igualdad -> . igualdad EQ rel
+    (36) igualdad -> . igualdad NE rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (43) expr -> . expr PLUS term
+    (44) expr -> . expr MINUS term
+    (45) expr -> . term
+    (46) term -> . term TIMES unario
+    (47) term -> . term DIVIDE unario
+    (48) term -> . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    exp_bool                       shift and go to state 56
+    comb                           shift and go to state 41
+    igualdad                       shift and go to state 42
+    rel                            shift and go to state 43
+    expr                           shift and go to state 44
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 49
+
+state 36
+
+    (25) sent_while -> WHILE LPAREN . exp_bool RPAREN bloque
+    (31) exp_bool -> . exp_bool OR comb
+    (32) exp_bool -> . comb
+    (33) comb -> . comb AND igualdad
+    (34) comb -> . igualdad
+    (35) igualdad -> . igualdad EQ rel
+    (36) igualdad -> . igualdad NE rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (43) expr -> . expr PLUS term
+    (44) expr -> . expr MINUS term
+    (45) expr -> . term
+    (46) term -> . term TIMES unario
+    (47) term -> . term DIVIDE unario
+    (48) term -> . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    exp_bool                       shift and go to state 57
+    comb                           shift and go to state 41
+    igualdad                       shift and go to state 42
+    rel                            shift and go to state 43
+    expr                           shift and go to state 44
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 49
+
+state 37
+
+    (26) sent_do -> DO bloque . UNTIL LPAREN exp_bool RPAREN SEMICOLON
+
+    UNTIL           shift and go to state 58
+
+
+state 38
+
+    (27) sent_read -> READ IDENTIFIER . SEMICOLON
+
+    SEMICOLON       shift and go to state 59
+
+
+state 39
+
+    (30) sent_assign -> IDENTIFIER ASSIGN . exp_bool SEMICOLON
+    (31) exp_bool -> . exp_bool OR comb
+    (32) exp_bool -> . comb
+    (33) comb -> . comb AND igualdad
+    (34) comb -> . igualdad
+    (35) igualdad -> . igualdad EQ rel
+    (36) igualdad -> . igualdad NE rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (43) expr -> . expr PLUS term
+    (44) expr -> . expr MINUS term
+    (45) expr -> . term
+    (46) term -> . term TIMES unario
+    (47) term -> . term DIVIDE unario
+    (48) term -> . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    exp_bool                       shift and go to state 60
+    comb                           shift and go to state 41
+    igualdad                       shift and go to state 42
+    rel                            shift and go to state 43
+    expr                           shift and go to state 44
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 49
+
+state 40
+
+    (28) sent_write -> WRITE exp_bool . SEMICOLON
+    (31) exp_bool -> exp_bool . OR comb
+
+    SEMICOLON       shift and go to state 61
+    OR              shift and go to state 62
+
+
+state 41
+
+    (32) exp_bool -> comb .
+    (33) comb -> comb . AND igualdad
+
+    SEMICOLON       reduce using rule 32 (exp_bool -> comb .)
+    OR              reduce using rule 32 (exp_bool -> comb .)
+    RPAREN          reduce using rule 32 (exp_bool -> comb .)
+    AND             shift and go to state 63
+
+
+state 42
+
+    (34) comb -> igualdad .
+    (35) igualdad -> igualdad . EQ rel
+    (36) igualdad -> igualdad . NE rel
+
+    AND             reduce using rule 34 (comb -> igualdad .)
+    SEMICOLON       reduce using rule 34 (comb -> igualdad .)
+    OR              reduce using rule 34 (comb -> igualdad .)
+    RPAREN          reduce using rule 34 (comb -> igualdad .)
+    EQ              shift and go to state 64
+    NE              shift and go to state 65
+
+
+state 43
+
+    (37) igualdad -> rel .
+
+    EQ              reduce using rule 37 (igualdad -> rel .)
+    NE              reduce using rule 37 (igualdad -> rel .)
+    AND             reduce using rule 37 (igualdad -> rel .)
+    SEMICOLON       reduce using rule 37 (igualdad -> rel .)
+    OR              reduce using rule 37 (igualdad -> rel .)
+    RPAREN          reduce using rule 37 (igualdad -> rel .)
+
+
+state 44
+
+    (38) rel -> expr . op_rel expr
+    (43) expr -> expr . PLUS term
+    (44) expr -> expr . MINUS term
+    (39) op_rel -> . LT
+    (40) op_rel -> . LE
+    (41) op_rel -> . GT
+    (42) op_rel -> . GE
+
+    PLUS            shift and go to state 67
+    MINUS           shift and go to state 68
+    LT              shift and go to state 69
+    LE              shift and go to state 70
+    GT              shift and go to state 71
+    GE              shift and go to state 72
+
+    op_rel                         shift and go to state 66
+
+state 45
+
+    (49) unario -> PLUS . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    unario                         shift and go to state 73
+    factor                         shift and go to state 49
+
+state 46
+
+    (45) expr -> term .
+    (46) term -> term . TIMES unario
+    (47) term -> term . DIVIDE unario
+
+    PLUS            reduce using rule 45 (expr -> term .)
+    MINUS           reduce using rule 45 (expr -> term .)
+    LT              reduce using rule 45 (expr -> term .)
+    LE              reduce using rule 45 (expr -> term .)
+    GT              reduce using rule 45 (expr -> term .)
+    GE              reduce using rule 45 (expr -> term .)
+    EQ              reduce using rule 45 (expr -> term .)
+    NE              reduce using rule 45 (expr -> term .)
+    AND             reduce using rule 45 (expr -> term .)
+    SEMICOLON       reduce using rule 45 (expr -> term .)
+    OR              reduce using rule 45 (expr -> term .)
+    RPAREN          reduce using rule 45 (expr -> term .)
+    TIMES           shift and go to state 74
+    DIVIDE          shift and go to state 75
+
+
+state 47
+
+    (50) unario -> MINUS . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    unario                         shift and go to state 76
+    factor                         shift and go to state 49
+
+state 48
+
+    (48) term -> unario .
+
+    TIMES           reduce using rule 48 (term -> unario .)
+    DIVIDE          reduce using rule 48 (term -> unario .)
+    PLUS            reduce using rule 48 (term -> unario .)
+    MINUS           reduce using rule 48 (term -> unario .)
+    LT              reduce using rule 48 (term -> unario .)
+    LE              reduce using rule 48 (term -> unario .)
+    GT              reduce using rule 48 (term -> unario .)
+    GE              reduce using rule 48 (term -> unario .)
+    EQ              reduce using rule 48 (term -> unario .)
+    NE              reduce using rule 48 (term -> unario .)
+    AND             reduce using rule 48 (term -> unario .)
+    SEMICOLON       reduce using rule 48 (term -> unario .)
+    OR              reduce using rule 48 (term -> unario .)
+    RPAREN          reduce using rule 48 (term -> unario .)
+
+
+state 49
+
+    (51) unario -> factor .
+
+    TIMES           reduce using rule 51 (unario -> factor .)
+    DIVIDE          reduce using rule 51 (unario -> factor .)
+    PLUS            reduce using rule 51 (unario -> factor .)
+    MINUS           reduce using rule 51 (unario -> factor .)
+    LT              reduce using rule 51 (unario -> factor .)
+    LE              reduce using rule 51 (unario -> factor .)
+    GT              reduce using rule 51 (unario -> factor .)
+    GE              reduce using rule 51 (unario -> factor .)
+    EQ              reduce using rule 51 (unario -> factor .)
+    NE              reduce using rule 51 (unario -> factor .)
+    AND             reduce using rule 51 (unario -> factor .)
+    SEMICOLON       reduce using rule 51 (unario -> factor .)
+    OR              reduce using rule 51 (unario -> factor .)
+    RPAREN          reduce using rule 51 (unario -> factor .)
+
+
+state 50
+
+    (52) factor -> NUMBER .
+
+    TIMES           reduce using rule 52 (factor -> NUMBER .)
+    DIVIDE          reduce using rule 52 (factor -> NUMBER .)
+    PLUS            reduce using rule 52 (factor -> NUMBER .)
+    MINUS           reduce using rule 52 (factor -> NUMBER .)
+    LT              reduce using rule 52 (factor -> NUMBER .)
+    LE              reduce using rule 52 (factor -> NUMBER .)
+    GT              reduce using rule 52 (factor -> NUMBER .)
+    GE              reduce using rule 52 (factor -> NUMBER .)
+    EQ              reduce using rule 52 (factor -> NUMBER .)
+    NE              reduce using rule 52 (factor -> NUMBER .)
+    AND             reduce using rule 52 (factor -> NUMBER .)
+    SEMICOLON       reduce using rule 52 (factor -> NUMBER .)
+    OR              reduce using rule 52 (factor -> NUMBER .)
+    RPAREN          reduce using rule 52 (factor -> NUMBER .)
+
+
+state 51
+
+    (53) factor -> IDENTIFIER .
+
+    TIMES           reduce using rule 53 (factor -> IDENTIFIER .)
+    DIVIDE          reduce using rule 53 (factor -> IDENTIFIER .)
+    PLUS            reduce using rule 53 (factor -> IDENTIFIER .)
+    MINUS           reduce using rule 53 (factor -> IDENTIFIER .)
+    LT              reduce using rule 53 (factor -> IDENTIFIER .)
+    LE              reduce using rule 53 (factor -> IDENTIFIER .)
+    GT              reduce using rule 53 (factor -> IDENTIFIER .)
+    GE              reduce using rule 53 (factor -> IDENTIFIER .)
+    EQ              reduce using rule 53 (factor -> IDENTIFIER .)
+    NE              reduce using rule 53 (factor -> IDENTIFIER .)
+    AND             reduce using rule 53 (factor -> IDENTIFIER .)
+    SEMICOLON       reduce using rule 53 (factor -> IDENTIFIER .)
+    OR              reduce using rule 53 (factor -> IDENTIFIER .)
+    RPAREN          reduce using rule 53 (factor -> IDENTIFIER .)
+
+
+state 52
+
+    (54) factor -> LPAREN . exp_bool RPAREN
+    (31) exp_bool -> . exp_bool OR comb
+    (32) exp_bool -> . comb
+    (33) comb -> . comb AND igualdad
+    (34) comb -> . igualdad
+    (35) igualdad -> . igualdad EQ rel
+    (36) igualdad -> . igualdad NE rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (43) expr -> . expr PLUS term
+    (44) expr -> . expr MINUS term
+    (45) expr -> . term
+    (46) term -> . term TIMES unario
+    (47) term -> . term DIVIDE unario
+    (48) term -> . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    exp_bool                       shift and go to state 77
+    comb                           shift and go to state 41
+    igualdad                       shift and go to state 42
+    rel                            shift and go to state 43
+    expr                           shift and go to state 44
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 49
+
+state 53
+
+    (5) decl -> tipo list_id SEMICOLON .
+
+    BREAK           reduce using rule 5 (decl -> tipo list_id SEMICOLON .)
+    INT             reduce using rule 5 (decl -> tipo list_id SEMICOLON .)
+    FLOAT           reduce using rule 5 (decl -> tipo list_id SEMICOLON .)
+    BOOL            reduce using rule 5 (decl -> tipo list_id SEMICOLON .)
+    IF              reduce using rule 5 (decl -> tipo list_id SEMICOLON .)
+    WHILE           reduce using rule 5 (decl -> tipo list_id SEMICOLON .)
+    DO              reduce using rule 5 (decl -> tipo list_id SEMICOLON .)
+    READ            reduce using rule 5 (decl -> tipo list_id SEMICOLON .)
+    WRITE           reduce using rule 5 (decl -> tipo list_id SEMICOLON .)
+    LBRACE          reduce using rule 5 (decl -> tipo list_id SEMICOLON .)
+    IDENTIFIER      reduce using rule 5 (decl -> tipo list_id SEMICOLON .)
+    RBRACE          reduce using rule 5 (decl -> tipo list_id SEMICOLON .)
+
+
+state 54
+
+    (9) list_id -> list_id COMMA . IDENTIFIER
+
+    IDENTIFIER      shift and go to state 78
+
+
+state 55
+
+    (29) bloque -> LBRACE list_sent RBRACE .
+
+    RBRACE          reduce using rule 29 (bloque -> LBRACE list_sent RBRACE .)
+    BREAK           reduce using rule 29 (bloque -> LBRACE list_sent RBRACE .)
+    IF              reduce using rule 29 (bloque -> LBRACE list_sent RBRACE .)
+    WHILE           reduce using rule 29 (bloque -> LBRACE list_sent RBRACE .)
+    DO              reduce using rule 29 (bloque -> LBRACE list_sent RBRACE .)
+    READ            reduce using rule 29 (bloque -> LBRACE list_sent RBRACE .)
+    WRITE           reduce using rule 29 (bloque -> LBRACE list_sent RBRACE .)
+    LBRACE          reduce using rule 29 (bloque -> LBRACE list_sent RBRACE .)
+    IDENTIFIER      reduce using rule 29 (bloque -> LBRACE list_sent RBRACE .)
+    UNTIL           reduce using rule 29 (bloque -> LBRACE list_sent RBRACE .)
+    ELSE            reduce using rule 29 (bloque -> LBRACE list_sent RBRACE .)
+    FI              reduce using rule 29 (bloque -> LBRACE list_sent RBRACE .)
+
+
+state 56
+
+    (22) sent_if -> IF LPAREN exp_bool . RPAREN bloque else_part FI
+    (31) exp_bool -> exp_bool . OR comb
+
+    RPAREN          shift and go to state 79
+    OR              shift and go to state 62
+
+
+state 57
+
+    (25) sent_while -> WHILE LPAREN exp_bool . RPAREN bloque
+    (31) exp_bool -> exp_bool . OR comb
+
+    RPAREN          shift and go to state 80
+    OR              shift and go to state 62
+
+
+state 58
+
+    (26) sent_do -> DO bloque UNTIL . LPAREN exp_bool RPAREN SEMICOLON
+
+    LPAREN          shift and go to state 81
+
+
+state 59
+
+    (27) sent_read -> READ IDENTIFIER SEMICOLON .
+
+    RBRACE          reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
+    BREAK           reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
+    IF              reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
+    WHILE           reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
+    DO              reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
+    READ            reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
+    WRITE           reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
+    LBRACE          reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
+    IDENTIFIER      reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
+
+
+state 60
+
+    (30) sent_assign -> IDENTIFIER ASSIGN exp_bool . SEMICOLON
+    (31) exp_bool -> exp_bool . OR comb
+
+    SEMICOLON       shift and go to state 82
+    OR              shift and go to state 62
+
+
+state 61
+
+    (28) sent_write -> WRITE exp_bool SEMICOLON .
+
+    RBRACE          reduce using rule 28 (sent_write -> WRITE exp_bool SEMICOLON .)
+    BREAK           reduce using rule 28 (sent_write -> WRITE exp_bool SEMICOLON .)
+    IF              reduce using rule 28 (sent_write -> WRITE exp_bool SEMICOLON .)
+    WHILE           reduce using rule 28 (sent_write -> WRITE exp_bool SEMICOLON .)
+    DO              reduce using rule 28 (sent_write -> WRITE exp_bool SEMICOLON .)
+    READ            reduce using rule 28 (sent_write -> WRITE exp_bool SEMICOLON .)
+    WRITE           reduce using rule 28 (sent_write -> WRITE exp_bool SEMICOLON .)
+    LBRACE          reduce using rule 28 (sent_write -> WRITE exp_bool SEMICOLON .)
+    IDENTIFIER      reduce using rule 28 (sent_write -> WRITE exp_bool SEMICOLON .)
+
+
+state 62
+
+    (31) exp_bool -> exp_bool OR . comb
+    (33) comb -> . comb AND igualdad
+    (34) comb -> . igualdad
+    (35) igualdad -> . igualdad EQ rel
+    (36) igualdad -> . igualdad NE rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (43) expr -> . expr PLUS term
+    (44) expr -> . expr MINUS term
+    (45) expr -> . term
+    (46) term -> . term TIMES unario
+    (47) term -> . term DIVIDE unario
+    (48) term -> . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    comb                           shift and go to state 83
+    igualdad                       shift and go to state 42
+    rel                            shift and go to state 43
+    expr                           shift and go to state 44
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 49
+
+state 63
+
+    (33) comb -> comb AND . igualdad
+    (35) igualdad -> . igualdad EQ rel
+    (36) igualdad -> . igualdad NE rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (43) expr -> . expr PLUS term
+    (44) expr -> . expr MINUS term
+    (45) expr -> . term
+    (46) term -> . term TIMES unario
+    (47) term -> . term DIVIDE unario
+    (48) term -> . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    igualdad                       shift and go to state 84
+    rel                            shift and go to state 43
+    expr                           shift and go to state 44
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 49
+
+state 64
+
+    (35) igualdad -> igualdad EQ . rel
+    (38) rel -> . expr op_rel expr
+    (43) expr -> . expr PLUS term
+    (44) expr -> . expr MINUS term
+    (45) expr -> . term
+    (46) term -> . term TIMES unario
+    (47) term -> . term DIVIDE unario
+    (48) term -> . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    rel                            shift and go to state 85
+    expr                           shift and go to state 44
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 49
+
+state 65
+
+    (36) igualdad -> igualdad NE . rel
+    (38) rel -> . expr op_rel expr
+    (43) expr -> . expr PLUS term
+    (44) expr -> . expr MINUS term
+    (45) expr -> . term
+    (46) term -> . term TIMES unario
+    (47) term -> . term DIVIDE unario
+    (48) term -> . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    rel                            shift and go to state 86
+    expr                           shift and go to state 44
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 49
+
+state 66
+
+    (38) rel -> expr op_rel . expr
+    (43) expr -> . expr PLUS term
+    (44) expr -> . expr MINUS term
+    (45) expr -> . term
+    (46) term -> . term TIMES unario
+    (47) term -> . term DIVIDE unario
+    (48) term -> . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    expr                           shift and go to state 87
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 49
+
+state 67
+
+    (43) expr -> expr PLUS . term
+    (46) term -> . term TIMES unario
+    (47) term -> . term DIVIDE unario
+    (48) term -> . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    term                           shift and go to state 88
+    unario                         shift and go to state 48
+    factor                         shift and go to state 49
+
+state 68
+
+    (44) expr -> expr MINUS . term
+    (46) term -> . term TIMES unario
+    (47) term -> . term DIVIDE unario
+    (48) term -> . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    term                           shift and go to state 89
+    unario                         shift and go to state 48
+    factor                         shift and go to state 49
+
+state 69
+
+    (39) op_rel -> LT .
+
+    PLUS            reduce using rule 39 (op_rel -> LT .)
+    MINUS           reduce using rule 39 (op_rel -> LT .)
+    NUMBER          reduce using rule 39 (op_rel -> LT .)
+    IDENTIFIER      reduce using rule 39 (op_rel -> LT .)
+    LPAREN          reduce using rule 39 (op_rel -> LT .)
+
+
+state 70
+
+    (40) op_rel -> LE .
+
+    PLUS            reduce using rule 40 (op_rel -> LE .)
+    MINUS           reduce using rule 40 (op_rel -> LE .)
+    NUMBER          reduce using rule 40 (op_rel -> LE .)
+    IDENTIFIER      reduce using rule 40 (op_rel -> LE .)
+    LPAREN          reduce using rule 40 (op_rel -> LE .)
+
+
+state 71
+
+    (41) op_rel -> GT .
+
+    PLUS            reduce using rule 41 (op_rel -> GT .)
+    MINUS           reduce using rule 41 (op_rel -> GT .)
+    NUMBER          reduce using rule 41 (op_rel -> GT .)
+    IDENTIFIER      reduce using rule 41 (op_rel -> GT .)
+    LPAREN          reduce using rule 41 (op_rel -> GT .)
+
+
+state 72
+
+    (42) op_rel -> GE .
+
+    PLUS            reduce using rule 42 (op_rel -> GE .)
+    MINUS           reduce using rule 42 (op_rel -> GE .)
+    NUMBER          reduce using rule 42 (op_rel -> GE .)
+    IDENTIFIER      reduce using rule 42 (op_rel -> GE .)
+    LPAREN          reduce using rule 42 (op_rel -> GE .)
+
+
+state 73
+
+    (49) unario -> PLUS unario .
+
+    TIMES           reduce using rule 49 (unario -> PLUS unario .)
+    DIVIDE          reduce using rule 49 (unario -> PLUS unario .)
+    PLUS            reduce using rule 49 (unario -> PLUS unario .)
+    MINUS           reduce using rule 49 (unario -> PLUS unario .)
+    LT              reduce using rule 49 (unario -> PLUS unario .)
+    LE              reduce using rule 49 (unario -> PLUS unario .)
+    GT              reduce using rule 49 (unario -> PLUS unario .)
+    GE              reduce using rule 49 (unario -> PLUS unario .)
+    EQ              reduce using rule 49 (unario -> PLUS unario .)
+    NE              reduce using rule 49 (unario -> PLUS unario .)
+    AND             reduce using rule 49 (unario -> PLUS unario .)
+    SEMICOLON       reduce using rule 49 (unario -> PLUS unario .)
+    OR              reduce using rule 49 (unario -> PLUS unario .)
+    RPAREN          reduce using rule 49 (unario -> PLUS unario .)
+
+
+state 74
+
+    (46) term -> term TIMES . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    unario                         shift and go to state 90
+    factor                         shift and go to state 49
+
+state 75
+
+    (47) term -> term DIVIDE . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    unario                         shift and go to state 91
+    factor                         shift and go to state 49
+
+state 76
+
+    (50) unario -> MINUS unario .
+
+    TIMES           reduce using rule 50 (unario -> MINUS unario .)
+    DIVIDE          reduce using rule 50 (unario -> MINUS unario .)
+    PLUS            reduce using rule 50 (unario -> MINUS unario .)
+    MINUS           reduce using rule 50 (unario -> MINUS unario .)
+    LT              reduce using rule 50 (unario -> MINUS unario .)
+    LE              reduce using rule 50 (unario -> MINUS unario .)
+    GT              reduce using rule 50 (unario -> MINUS unario .)
+    GE              reduce using rule 50 (unario -> MINUS unario .)
+    EQ              reduce using rule 50 (unario -> MINUS unario .)
+    NE              reduce using rule 50 (unario -> MINUS unario .)
+    AND             reduce using rule 50 (unario -> MINUS unario .)
+    SEMICOLON       reduce using rule 50 (unario -> MINUS unario .)
+    OR              reduce using rule 50 (unario -> MINUS unario .)
+    RPAREN          reduce using rule 50 (unario -> MINUS unario .)
+
+
+state 77
+
+    (54) factor -> LPAREN exp_bool . RPAREN
+    (31) exp_bool -> exp_bool . OR comb
+
+    RPAREN          shift and go to state 92
+    OR              shift and go to state 62
+
+
+state 78
+
+    (9) list_id -> list_id COMMA IDENTIFIER .
+
+    SEMICOLON       reduce using rule 9 (list_id -> list_id COMMA IDENTIFIER .)
+    COMMA           reduce using rule 9 (list_id -> list_id COMMA IDENTIFIER .)
+
+
+state 79
+
+    (22) sent_if -> IF LPAREN exp_bool RPAREN . bloque else_part FI
+    (29) bloque -> . LBRACE list_sent RBRACE
+
+    LBRACE          shift and go to state 11
+
+    bloque                         shift and go to state 93
+
+state 80
+
+    (25) sent_while -> WHILE LPAREN exp_bool RPAREN . bloque
+    (29) bloque -> . LBRACE list_sent RBRACE
+
+    LBRACE          shift and go to state 11
+
+    bloque                         shift and go to state 94
+
+state 81
+
+    (26) sent_do -> DO bloque UNTIL LPAREN . exp_bool RPAREN SEMICOLON
+    (31) exp_bool -> . exp_bool OR comb
+    (32) exp_bool -> . comb
+    (33) comb -> . comb AND igualdad
+    (34) comb -> . igualdad
+    (35) igualdad -> . igualdad EQ rel
+    (36) igualdad -> . igualdad NE rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (43) expr -> . expr PLUS term
+    (44) expr -> . expr MINUS term
+    (45) expr -> . term
+    (46) term -> . term TIMES unario
+    (47) term -> . term DIVIDE unario
+    (48) term -> . unario
+    (49) unario -> . PLUS unario
+    (50) unario -> . MINUS unario
+    (51) unario -> . factor
+    (52) factor -> . NUMBER
+    (53) factor -> . IDENTIFIER
+    (54) factor -> . LPAREN exp_bool RPAREN
+
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 47
+    NUMBER          shift and go to state 50
+    IDENTIFIER      shift and go to state 51
+    LPAREN          shift and go to state 52
+
+    exp_bool                       shift and go to state 95
+    comb                           shift and go to state 41
+    igualdad                       shift and go to state 42
+    rel                            shift and go to state 43
+    expr                           shift and go to state 44
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 49
+
+state 82
+
+    (30) sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .
+
+    RBRACE          reduce using rule 30 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
+    BREAK           reduce using rule 30 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
+    IF              reduce using rule 30 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
+    WHILE           reduce using rule 30 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
+    DO              reduce using rule 30 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
+    READ            reduce using rule 30 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
+    WRITE           reduce using rule 30 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
+    LBRACE          reduce using rule 30 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
+    IDENTIFIER      reduce using rule 30 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
+
+
+state 83
+
+    (31) exp_bool -> exp_bool OR comb .
+    (33) comb -> comb . AND igualdad
+
+    SEMICOLON       reduce using rule 31 (exp_bool -> exp_bool OR comb .)
+    OR              reduce using rule 31 (exp_bool -> exp_bool OR comb .)
+    RPAREN          reduce using rule 31 (exp_bool -> exp_bool OR comb .)
+    AND             shift and go to state 63
+
+
+state 84
+
+    (33) comb -> comb AND igualdad .
+    (35) igualdad -> igualdad . EQ rel
+    (36) igualdad -> igualdad . NE rel
+
+    AND             reduce using rule 33 (comb -> comb AND igualdad .)
+    SEMICOLON       reduce using rule 33 (comb -> comb AND igualdad .)
+    OR              reduce using rule 33 (comb -> comb AND igualdad .)
+    RPAREN          reduce using rule 33 (comb -> comb AND igualdad .)
+    EQ              shift and go to state 64
+    NE              shift and go to state 65
+
+
+state 85
+
+    (35) igualdad -> igualdad EQ rel .
+
+    EQ              reduce using rule 35 (igualdad -> igualdad EQ rel .)
+    NE              reduce using rule 35 (igualdad -> igualdad EQ rel .)
+    AND             reduce using rule 35 (igualdad -> igualdad EQ rel .)
+    SEMICOLON       reduce using rule 35 (igualdad -> igualdad EQ rel .)
+    OR              reduce using rule 35 (igualdad -> igualdad EQ rel .)
+    RPAREN          reduce using rule 35 (igualdad -> igualdad EQ rel .)
+
+
+state 86
+
+    (36) igualdad -> igualdad NE rel .
+
+    EQ              reduce using rule 36 (igualdad -> igualdad NE rel .)
+    NE              reduce using rule 36 (igualdad -> igualdad NE rel .)
+    AND             reduce using rule 36 (igualdad -> igualdad NE rel .)
+    SEMICOLON       reduce using rule 36 (igualdad -> igualdad NE rel .)
+    OR              reduce using rule 36 (igualdad -> igualdad NE rel .)
+    RPAREN          reduce using rule 36 (igualdad -> igualdad NE rel .)
+
+
+state 87
+
+    (38) rel -> expr op_rel expr .
+    (43) expr -> expr . PLUS term
+    (44) expr -> expr . MINUS term
+
+    EQ              reduce using rule 38 (rel -> expr op_rel expr .)
+    NE              reduce using rule 38 (rel -> expr op_rel expr .)
+    AND             reduce using rule 38 (rel -> expr op_rel expr .)
+    SEMICOLON       reduce using rule 38 (rel -> expr op_rel expr .)
+    OR              reduce using rule 38 (rel -> expr op_rel expr .)
+    RPAREN          reduce using rule 38 (rel -> expr op_rel expr .)
+    PLUS            shift and go to state 67
+    MINUS           shift and go to state 68
+
+
+state 88
+
+    (43) expr -> expr PLUS term .
+    (46) term -> term . TIMES unario
+    (47) term -> term . DIVIDE unario
+
+    PLUS            reduce using rule 43 (expr -> expr PLUS term .)
+    MINUS           reduce using rule 43 (expr -> expr PLUS term .)
+    LT              reduce using rule 43 (expr -> expr PLUS term .)
+    LE              reduce using rule 43 (expr -> expr PLUS term .)
+    GT              reduce using rule 43 (expr -> expr PLUS term .)
+    GE              reduce using rule 43 (expr -> expr PLUS term .)
+    EQ              reduce using rule 43 (expr -> expr PLUS term .)
+    NE              reduce using rule 43 (expr -> expr PLUS term .)
+    AND             reduce using rule 43 (expr -> expr PLUS term .)
+    SEMICOLON       reduce using rule 43 (expr -> expr PLUS term .)
+    OR              reduce using rule 43 (expr -> expr PLUS term .)
+    RPAREN          reduce using rule 43 (expr -> expr PLUS term .)
+    TIMES           shift and go to state 74
+    DIVIDE          shift and go to state 75
+
+
+state 89
+
+    (44) expr -> expr MINUS term .
+    (46) term -> term . TIMES unario
+    (47) term -> term . DIVIDE unario
+
+    PLUS            reduce using rule 44 (expr -> expr MINUS term .)
+    MINUS           reduce using rule 44 (expr -> expr MINUS term .)
+    LT              reduce using rule 44 (expr -> expr MINUS term .)
+    LE              reduce using rule 44 (expr -> expr MINUS term .)
+    GT              reduce using rule 44 (expr -> expr MINUS term .)
+    GE              reduce using rule 44 (expr -> expr MINUS term .)
+    EQ              reduce using rule 44 (expr -> expr MINUS term .)
+    NE              reduce using rule 44 (expr -> expr MINUS term .)
+    AND             reduce using rule 44 (expr -> expr MINUS term .)
+    SEMICOLON       reduce using rule 44 (expr -> expr MINUS term .)
+    OR              reduce using rule 44 (expr -> expr MINUS term .)
+    RPAREN          reduce using rule 44 (expr -> expr MINUS term .)
+    TIMES           shift and go to state 74
+    DIVIDE          shift and go to state 75
+
+
+state 90
+
+    (46) term -> term TIMES unario .
+
+    TIMES           reduce using rule 46 (term -> term TIMES unario .)
+    DIVIDE          reduce using rule 46 (term -> term TIMES unario .)
+    PLUS            reduce using rule 46 (term -> term TIMES unario .)
+    MINUS           reduce using rule 46 (term -> term TIMES unario .)
+    LT              reduce using rule 46 (term -> term TIMES unario .)
+    LE              reduce using rule 46 (term -> term TIMES unario .)
+    GT              reduce using rule 46 (term -> term TIMES unario .)
+    GE              reduce using rule 46 (term -> term TIMES unario .)
+    EQ              reduce using rule 46 (term -> term TIMES unario .)
+    NE              reduce using rule 46 (term -> term TIMES unario .)
+    AND             reduce using rule 46 (term -> term TIMES unario .)
+    SEMICOLON       reduce using rule 46 (term -> term TIMES unario .)
+    OR              reduce using rule 46 (term -> term TIMES unario .)
+    RPAREN          reduce using rule 46 (term -> term TIMES unario .)
+
+
+state 91
+
+    (47) term -> term DIVIDE unario .
+
+    TIMES           reduce using rule 47 (term -> term DIVIDE unario .)
+    DIVIDE          reduce using rule 47 (term -> term DIVIDE unario .)
+    PLUS            reduce using rule 47 (term -> term DIVIDE unario .)
+    MINUS           reduce using rule 47 (term -> term DIVIDE unario .)
+    LT              reduce using rule 47 (term -> term DIVIDE unario .)
+    LE              reduce using rule 47 (term -> term DIVIDE unario .)
+    GT              reduce using rule 47 (term -> term DIVIDE unario .)
+    GE              reduce using rule 47 (term -> term DIVIDE unario .)
+    EQ              reduce using rule 47 (term -> term DIVIDE unario .)
+    NE              reduce using rule 47 (term -> term DIVIDE unario .)
+    AND             reduce using rule 47 (term -> term DIVIDE unario .)
+    SEMICOLON       reduce using rule 47 (term -> term DIVIDE unario .)
+    OR              reduce using rule 47 (term -> term DIVIDE unario .)
+    RPAREN          reduce using rule 47 (term -> term DIVIDE unario .)
+
+
+state 92
+
+    (54) factor -> LPAREN exp_bool RPAREN .
+
+    TIMES           reduce using rule 54 (factor -> LPAREN exp_bool RPAREN .)
+    DIVIDE          reduce using rule 54 (factor -> LPAREN exp_bool RPAREN .)
+    PLUS            reduce using rule 54 (factor -> LPAREN exp_bool RPAREN .)
+    MINUS           reduce using rule 54 (factor -> LPAREN exp_bool RPAREN .)
+    LT              reduce using rule 54 (factor -> LPAREN exp_bool RPAREN .)
+    LE              reduce using rule 54 (factor -> LPAREN exp_bool RPAREN .)
+    GT              reduce using rule 54 (factor -> LPAREN exp_bool RPAREN .)
+    GE              reduce using rule 54 (factor -> LPAREN exp_bool RPAREN .)
+    EQ              reduce using rule 54 (factor -> LPAREN exp_bool RPAREN .)
+    NE              reduce using rule 54 (factor -> LPAREN exp_bool RPAREN .)
+    AND             reduce using rule 54 (factor -> LPAREN exp_bool RPAREN .)
+    SEMICOLON       reduce using rule 54 (factor -> LPAREN exp_bool RPAREN .)
+    OR              reduce using rule 54 (factor -> LPAREN exp_bool RPAREN .)
+    RPAREN          reduce using rule 54 (factor -> LPAREN exp_bool RPAREN .)
+
+
+state 93
+
+    (22) sent_if -> IF LPAREN exp_bool RPAREN bloque . else_part FI
+    (23) else_part -> . ELSE bloque
+    (24) else_part -> . empty
+    (55) empty -> .
+
+    ELSE            shift and go to state 97
+    FI              reduce using rule 55 (empty -> .)
+
+    else_part                      shift and go to state 96
+    empty                          shift and go to state 98
+
+state 94
+
+    (25) sent_while -> WHILE LPAREN exp_bool RPAREN bloque .
+
+    RBRACE          reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
+    BREAK           reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
+    IF              reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
+    WHILE           reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
+    DO              reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
+    READ            reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
+    WRITE           reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
+    LBRACE          reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
+    IDENTIFIER      reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
+
+
+state 95
+
+    (26) sent_do -> DO bloque UNTIL LPAREN exp_bool . RPAREN SEMICOLON
+    (31) exp_bool -> exp_bool . OR comb
+
+    RPAREN          shift and go to state 99
+    OR              shift and go to state 62
+
+
+state 96
+
+    (22) sent_if -> IF LPAREN exp_bool RPAREN bloque else_part . FI
+
+    FI              shift and go to state 100
+
+
+state 97
+
+    (23) else_part -> ELSE . bloque
+    (29) bloque -> . LBRACE list_sent RBRACE
+
+    LBRACE          shift and go to state 11
+
+    bloque                         shift and go to state 101
+
+state 98
+
+    (24) else_part -> empty .
+
+    FI              reduce using rule 24 (else_part -> empty .)
+
+
+state 99
+
+    (26) sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN . SEMICOLON
+
+    SEMICOLON       shift and go to state 102
+
+
+state 100
+
+    (22) sent_if -> IF LPAREN exp_bool RPAREN bloque else_part FI .
+
+    RBRACE          reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN bloque else_part FI .)
+    BREAK           reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN bloque else_part FI .)
+    IF              reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN bloque else_part FI .)
+    WHILE           reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN bloque else_part FI .)
+    DO              reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN bloque else_part FI .)
+    READ            reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN bloque else_part FI .)
+    WRITE           reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN bloque else_part FI .)
+    LBRACE          reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN bloque else_part FI .)
+    IDENTIFIER      reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN bloque else_part FI .)
+
+
+state 101
+
+    (23) else_part -> ELSE bloque .
+
+    FI              reduce using rule 23 (else_part -> ELSE bloque .)
+
+
+state 102
+
+    (26) sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .
+
+    RBRACE          reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
+    BREAK           reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
+    IF              reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
+    WHILE           reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
+    DO              reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
+    READ            reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
+    WRITE           reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
+    LBRACE          reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
+    IDENTIFIER      reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for INT in state 3 resolved as shift
+WARNING: shift/reduce conflict for FLOAT in state 3 resolved as shift
+WARNING: shift/reduce conflict for BOOL in state 3 resolved as shift
+WARNING: shift/reduce conflict for BREAK in state 4 resolved as shift
+WARNING: shift/reduce conflict for IF in state 4 resolved as shift
+WARNING: shift/reduce conflict for WHILE in state 4 resolved as shift
+WARNING: shift/reduce conflict for DO in state 4 resolved as shift
+WARNING: shift/reduce conflict for READ in state 4 resolved as shift
+WARNING: shift/reduce conflict for WRITE in state 4 resolved as shift
+WARNING: shift/reduce conflict for LBRACE in state 4 resolved as shift
+WARNING: shift/reduce conflict for IDENTIFIER in state 4 resolved as shift
+WARNING: shift/reduce conflict for BREAK in state 11 resolved as shift
+WARNING: shift/reduce conflict for IF in state 11 resolved as shift
+WARNING: shift/reduce conflict for WHILE in state 11 resolved as shift
+WARNING: shift/reduce conflict for DO in state 11 resolved as shift
+WARNING: shift/reduce conflict for READ in state 11 resolved as shift
+WARNING: shift/reduce conflict for WRITE in state 11 resolved as shift
+WARNING: shift/reduce conflict for LBRACE in state 11 resolved as shift
+WARNING: shift/reduce conflict for IDENTIFIER in state 11 resolved as shift

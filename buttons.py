@@ -2,7 +2,7 @@
 import os
 from tkinter import Button
 import tkinter
-from file_operations import nuevo, abrir, guardar, guardar_como, run_command
+from file_operations import nuevo, abrir, guardar, guardar_como, run_command, run_syntax_analysis
 
 
 # Lista para mantener referencias globales a las imágenes
@@ -14,7 +14,7 @@ def resize_image(image_path, width, height):
     images.append(resized_image)  # Mantener referencia global
     return resized_image
 
-def create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_lexico):
+def create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_lexico, frame_sintactico):
 
     # Rutas de las imagenes
     img_new_path = os.path.abspath("img/new.png")
@@ -37,7 +37,7 @@ def create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_l
     button_save.pack(side='left', padx=5)
     button_save_as = Button(button_frame, image=img_save_as, command=lambda: guardar_como(root, mensaje, texto))
     button_save_as.pack(side='left', padx=5)
-    button_run = Button(button_frame, image=img_run, command=lambda: run_command(root, mensaje, texto, frame_lexico, pantalla_errores))
+    button_run = Button(button_frame, image=img_run, command=lambda: run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sintactico))
     button_run.pack(side='left', padx=5)
 
     

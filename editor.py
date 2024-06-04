@@ -1,5 +1,5 @@
 from tkinter import Frame, Scrollbar, StringVar, Tk, Text, Label, ttk
-from file_operations import highlight_syntax
+from file_operations import highlight_syntax, run_syntax_analysis
 from menu import create_menu
 from buttons import create_buttons
 
@@ -47,8 +47,7 @@ def create_editor():
     # Pestaña para Análisis Sintáctico
     frame_sintactico = ttk.Frame(tab_control_analisis)
     tab_control_analisis.add(frame_sintactico, text='Análisis Sintáctico')
-    # Aquí se debe agregar el análisis sintáctico
-    
+        
     tab_control_analisis.pack(fill='both', expand=True, padx=margen_x, pady=margen_y)
 
     # Monitor inferior
@@ -81,7 +80,7 @@ def create_editor():
 
     # Menu superior y botones
     create_menu(root, mensaje, texto)
-    create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_lexico)
+    create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_lexico, frame_sintactico)
 
     # Bucle de la aplicacion
     root.mainloop()

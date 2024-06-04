@@ -1,3 +1,1 @@
-if (x == 10){
-    compi1 = x * y;
-}
+program {}

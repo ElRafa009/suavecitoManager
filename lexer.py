@@ -3,7 +3,7 @@ import ply.lex as lex
 # Definir tokens
 tokens = (
     'PROGRAM', 'IF', 'ELSE', 'FI', 'DO', 'UNTIL', 'WHILE', 'READ', 'WRITE',
-    'FLOAT', 'INT', 'BOOL', 'NOT', 'AND', 'OR', 'TRUE', 'FALSE',
+    'FLOAT', 'INT', 'BOOL', 'NOT', 'AND', 'OR', 'TRUE', 'FALSE', 'BREAK',
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'POWER',
     'LT', 'LE', 'GT', 'GE', 'EQ', 'NE', 'ASSIGN',
     'SEMICOLON', 'COMMA', 'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE',
@@ -43,6 +43,12 @@ def t_IDENTIFIER(t):
         t.type = t.value.upper()  # Convertir a palabra clave si es una palabra reservada
     return t
 
+# Expresión regular para el token BREAK
+def t_BREAK(t):
+    r'break'
+    t.type = 'BREAK'
+    return t
+
 # Expresión regular para identificar números (enteros y flotantes)
 def t_NUMBER(t):
     r'\d+(\.\d+)?'
@@ -77,7 +83,7 @@ lexer.errors = []
 # Definir palabras clave
 keywords = {
     'program', 'if', 'else', 'fi', 'do', 'until', 'while', 'read', 'write',
-    'float', 'int', 'bool', 'not', 'and', 'or', 'true', 'false'
+    'float', 'int', 'bool', 'not', 'and', 'or', 'true', 'false', 'break'
 }
 
 def process_input(input_text):

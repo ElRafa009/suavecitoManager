@@ -1,0 +1,1 @@
+program {int x, y;write x;write y;}

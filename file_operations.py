@@ -2,6 +2,7 @@ from tkinter import END, Scrollbar, filedialog as FileDialog, ttk
 from io import open
 from lexer import reset_lexer
 from test_lexer import test_lexer
+from sintac import calculate_levels, parse_code, parser
 
 ruta = "" # La utilizaremos para almacenar la ruta del archivo
 
@@ -66,9 +67,8 @@ def mostrar_mensaje_en_rojo(pantalla_errores, mensaje):
         pantalla_errores.config(state='disabled')  # Deshabilitar la edición para que sea solo de lectura
         pantalla_errores.see('end')  # Desplazar la pantalla hacia abajo para mostrar el mensaje más reciente
 
-
 # Ejecutar análisis léxico sobre el archivo abierto
-def run_command(root, mensaje, texto, frame_lexico, pantalla_errores):
+def run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sintactico):
     global ruta
     mensaje.set("Ejecutando análisis léxico...")
     
@@ -106,7 +106,6 @@ def run_command(root, mensaje, texto, frame_lexico, pantalla_errores):
         
         # Ejecutar el análisis léxico
         tokens, errors = test_lexer(input_text, source='gui')
-        #tokens = process_input(contenido)
 
         # Insertar los tokens en la tabla
         if tokens:
@@ -120,13 +119,66 @@ def run_command(root, mensaje, texto, frame_lexico, pantalla_errores):
         if errors:
             for error in errors:
                 mostrar_mensaje_en_rojo(pantalla_errores, error[3])
-        pantalla_errores.config(state='disabled')
-
-
-        mensaje.set("Análisis léxico completado. Tokens generados.")
+            mensaje.set("Error en análisis léxico. Corrija los errores y vuelva a ejecutar.")
+            pantalla_errores.config(state='disabled')
+        else:
+            mensaje.set("Análisis léxico completado. Tokens generados.")
+            pantalla_errores.config(state='disabled')
+            # Ahora que el análisis léxico ha terminado correctamente, ejecutamos el análisis sintáctico
+            texto = tokens_to_text(tokens)
+            run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, tokens)
     else:
         mensaje.set("No hay archivo abierto para ejecutar análisis léxico.")
 
+def run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, tokens):
+    mensaje.set("Ejecutando análisis sintáctico...")
+
+    if tokens:
+        for child in frame_sintactico.winfo_children():
+            child.destroy()
+
+        tree = ttk.Treeview(frame_sintactico, columns=('Nodo', 'Valor'), show='headings')
+        tree.heading('Nodo', text='Nodo')
+        tree.heading('Valor', text='Valor')
+        tree.pack(fill='both', expand=True)
+
+        tree.column('Nodo', width=150, anchor='center')
+        tree.column('Valor', width=150, anchor='center')
+
+        result, errors = parse_code(texto)
+
+        if result:
+            calculate_levels(result)
+            def add_nodes(tree, node, parent=''):
+                tree.insert(parent, 'end', text=str(node), values=(node.type, node.level))
+                for child in node.children:
+                    add_nodes(tree, child, parent)
+
+            add_nodes(tree, result)
+            mensaje.set("Análisis sintáctico completado.")
+        else:
+            # Manejo de errores sintácticos
+            # Mostrar errores en pantalla_errores
+            pantalla_errores.config(state='normal')
+            pantalla_errores.delete(1.0, END)
+            if errors:
+                for error in errors:
+                    mostrar_mensaje_en_rojo(pantalla_errores, error)
+            mensaje.set("Análisis sintáctico fallido.")
+            pantalla_errores.config(state='disabled')
+            #error_message = result
+            #mensaje.set(error_message)
+            #mostrar_mensaje_en_rojo(pantalla_errores, error_message)
+            #mensaje.set("Análisis sintáctico fallido.")
+
+    else:
+        mensaje.set("No hay archivo abierto para ejecutar análisis sintáctico.")
+
+def tokens_to_text(tokens):
+    """
+    Convierte una lista de tokens en texto plano.
+    """
+    return ' '.join(str(token.value) for token in tokens)
 
 def highlight_syntax(texto):
     
