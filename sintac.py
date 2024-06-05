@@ -1,6 +1,9 @@
 import ply.yacc as yacc
-from lexer import tokens
+from lexer import tokens, find_column
 from graphviz import Digraph
+
+# Lista global para almacenar errores sintácticos
+syntax_errors = []
 
 # Nodo del árbol sintáctico abstracto
 class ASTNode:
@@ -10,7 +13,7 @@ class ASTNode:
         self.leaf = leaf
         self.level = level if level is not None else 1
 
-        # Función para agregar nodos y aristas al gráfico del árbol
+    # Función para agregar nodos y aristas al gráfico del árbol
     def add_nodes(self, graph):
         if self:
             graph.node(str(id(self)), f"{self.type}\n{self.leaf if self.leaf else ''}\n{self.level}")
@@ -21,11 +24,9 @@ class ASTNode:
 def calculate_levels(node, level=1):
     node.level = level
     for child in node.children:
-        calculate_levels(child, level + 1)
+        if isinstance(child, ASTNode):
+            calculate_levels(child, level + 1)
 
-last_valid_tokens = []
-# Lista para almacenar los errores sintácticos
-syntax_errors = []
 
 # Reglas gramaticales
 def p_program(p):
@@ -80,8 +81,8 @@ def p_sent(p):
     p[0] = ASTNode('sent', [p[1]])
 
 def p_sent_if(p):
-    '''sent_if : IF LPAREN exp_bool RPAREN bloque else_part FI'''
-    p[0] = ASTNode('sent_if', [p[3], p[5], p[6]])
+    '''sent_if : IF LPAREN exp_bool RPAREN THEN bloque else_part FI'''
+    p[0] = ASTNode('sent_if', [p[3], p[6], p[7]])
 
 def p_else_part(p):
     '''else_part : ELSE bloque
@@ -101,15 +102,28 @@ def p_sent_read(p):
     p[0] = ASTNode('sent_read', [ASTNode('identifier', leaf=p[2])])
 
 def p_sent_write(p):
-    '''sent_write : WRITE exp_bool SEMICOLON'''
+    '''sent_write : WRITE exp_bool_or_value SEMICOLON'''
     p[0] = ASTNode('sent_write', [p[2]])
+
+def p_exp_value(p):
+    '''exp_value : NUMBER
+                 | IDENTIFIER'''
+    p[0] = ASTNode('exp_value', leaf=p[1])
 
 def p_bloque(p):
     '''bloque : LBRACE list_sent RBRACE'''
     p[0] = ASTNode('bloque', [p[2]])
 
-def p_sent_assign(p):
+def p_sent_assign_expr(p):
+    '''sent_assign : IDENTIFIER ASSIGN expr SEMICOLON'''
+    p[0] = ASTNode('sent_assign', [ASTNode('identifier', leaf=p[1]), p[3]])
+
+def p_sent_assign_exp_bool(p):
     '''sent_assign : IDENTIFIER ASSIGN exp_bool SEMICOLON'''
+    p[0] = ASTNode('sent_assign', [ASTNode('identifier', leaf=p[1]), p[3]])
+
+def p_sent_assign_factor(p):
+    '''sent_assign : IDENTIFIER ASSIGN factor SEMICOLON'''
     p[0] = ASTNode('sent_assign', [ASTNode('identifier', leaf=p[1]), p[3]])
 
 def p_exp_bool(p):
@@ -119,6 +133,12 @@ def p_exp_bool(p):
         p[0] = ASTNode('exp_bool', [p[1], ASTNode('operator', leaf=p[2]), p[3]])
     else:
         p[0] = ASTNode('exp_bool', [p[1]])
+
+def p_exp_bool_or_value(p):
+    '''exp_bool_or_value : exp_bool
+                         | exp_value'''
+    p[0] = p[1]
+
 
 def p_comb(p):
     '''comb : comb AND igualdad
@@ -133,7 +153,8 @@ def p_igualdad(p):
                 | igualdad NE rel
                 | rel'''
     if len(p) == 4:
-        p[0] = ASTNode('igualdad', [p[1], ASTNode('operator', leaf=p[2]), p[3]])
+        p[0] = ASTNode('igualdad', [p[1],
+ ASTNode('operator', leaf=p[2]), p[3]])
     else:
         p[0] = ASTNode('igualdad', [p[1]])
 
@@ -145,7 +166,9 @@ def p_op_rel(p):
     '''op_rel : LT
               | LE
               | GT
-              | GE'''
+              | GE
+              | EQ
+              | NE'''
     p[0] = ASTNode('op_rel', leaf=p[1])
 
 def p_expr(p):
@@ -178,6 +201,8 @@ def p_unario(p):
 def p_factor(p):
     '''factor : NUMBER
               | IDENTIFIER
+              | TRUE
+              | FALSE
               | LPAREN exp_bool RPAREN'''
     if len(p) == 2:
         p[0] = ASTNode('factor', leaf=p[1])
@@ -188,62 +213,14 @@ def p_empty(p):
     '''empty :'''
     p[0] = ASTNode('empty')
 
-# Definir un diccionario que mapee las reglas gramaticales a los tokens esperados
-expected_tokens_map = {
-    'program': ['{'],
-    'list_decl': ['INT', 'FLOAT', 'BOOL', 'IDENTIFIER', 'EPSILON'],
-    'decl': ['INT', 'FLOAT', 'BOOL'],
-    'tipo': ['INT', 'FLOAT', 'BOOL'],
-    'list_id': ['IDENTIFIER'],
-    'list_sent': ['IF', 'WHILE', 'DO', 'READ', 'WRITE', '{', 'IDENTIFIER', 'BREAK', 'EPSILON'],
-    'sent': ['IF', 'WHILE', 'DO', 'READ', 'WRITE', '{', 'IDENTIFIER', 'BREAK'],
-    'sent_if': ['IF'],
-    'sent_while': ['WHILE'],
-    'sent_do': ['DO'],
-    'sent_read': ['READ'],
-    'sent_write': ['WRITE'],
-    'bloque': ['{'],
-    'sent_assign': ['IDENTIFIER'],
-    'exp_bool': ['(', 'IDENTIFIER', 'INTEGER', 'REAL', 'TRUE', 'FALSE'],
-    'comb': ['(', 'IDENTIFIER', 'INTEGER', 'REAL', 'TRUE', 'FALSE'],
-    'igualdad': ['(', 'IDENTIFIER', 'INTEGER', 'REAL', 'TRUE', 'FALSE'],
-    'rel': ['(', 'IDENTIFIER', 'INTEGER', 'REAL', 'TRUE', 'FALSE'],
-    'op_rel': ['LT', 'LE', 'GT', 'GE'],
-    'expr': ['-', 'IDENTIFIER', 'INTEGER', 'REAL', 'TRUE', 'FALSE'],
-    'term': ['-', 'IDENTIFIER', 'INTEGER', 'REAL', 'TRUE', 'FALSE'],
-    'unario': ['NOT', '-'],
-    'factor': ['(', 'IDENTIFIER', 'INTEGER', 'REAL', 'TRUE', 'FALSE']
-}
-
+# Función para manejar los errores sintácticos
 def p_error(p):
-    global syntax_errors
-    global last_valid_tokens
-
-    if last_valid_tokens:
-        last_valid_token_index = len(last_valid_tokens) - 1
-        last_valid_token = last_valid_tokens[last_valid_token_index]
-        last_valid_token_type = last_valid_token.type
-        expected_tokens = expected_tokens_map.get(last_valid_token_type, ['<TOKEN>'])
-
-        next_token = None
-        for token_type in expected_tokens:
-            for token in last_valid_tokens[::-1]:
-                if token.type == token_type:
-                    next_token = token.value
-                    break
-            if next_token:
-                break
-
-        error_message = f"Sintax error: Unexpected token '{p.value}' in line {p.lineno}. Expected token(s): {', '.join(expected_tokens)} Next token: '{next_token}'."
+    if p:
+        error_msg = f"Sintax Error: in '{p.value}' in line {p.lineno}."
+        syntax_errors.append(error_msg)
     else:
-        expected_tokens = expected_tokens_map.get('program', ['<TOKEN>'])
-        error_message = f"Sintax error: Unexpected token '{p.value}' in line {p.lineno}. Expected token(s): {', '.join(expected_tokens)}"
+        syntax_errors.append("Error de sintaxis en el final del archivo.")
 
-    syntax_errors.append(error_message)
-
-    # Limpiar lista de tokens válidos para evitar duplicados en errores
-    last_valid_tokens = []
-    
 # Construcción del parser
 parser = yacc.yacc()
 
@@ -267,6 +244,6 @@ def parse_code(code):
     
     # Análisis sintáctico
     result = parser.parse(code)
-    
+     
     # Devolver el resultado y los errores sintácticos
     return result, syntax_errors

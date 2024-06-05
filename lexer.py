@@ -7,7 +7,7 @@ tokens = (
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'POWER',
     'LT', 'LE', 'GT', 'GE', 'EQ', 'NE', 'ASSIGN',
     'SEMICOLON', 'COMMA', 'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE',
-    'IDENTIFIER', 'NUMBER', 'TB',
+    'IDENTIFIER', 'NUMBER', 'TB', 'THEN'
 )
 
 # Expresiones regulares para tokens simples
@@ -35,6 +35,19 @@ def t_TB(t):
     r'\t'
     t.value = 'TB'
     return t
+
+# Regla para comentarios de una sola línea
+def t_COMMENT_SINGLELINE(t):
+    r'\/\/.*'
+    pass  # Ignorar los comentarios de una sola línea
+
+# Regla para comentarios de varias líneas
+def t_COMMENT_MULTILINE(t):
+    r'\/\*(.|\n)*?\*\/'
+    t.lexer.lineno += t.value.count('\n')  # Incrementar el número de líneas según la cantidad de saltos de línea
+    t.lexer.lexpos += len(t.value)  # Incrementar el índice léxico para continuar desde el final del comentario
+    pass  # Ignorar los comentarios de varias líneas
+
 
 # Expresión regular para identificar identificadores (variables, palabras clave, etc.)
 def t_IDENTIFIER(t):
@@ -83,7 +96,7 @@ lexer.errors = []
 # Definir palabras clave
 keywords = {
     'program', 'if', 'else', 'fi', 'do', 'until', 'while', 'read', 'write',
-    'float', 'int', 'bool', 'not', 'and', 'or', 'true', 'false', 'break'
+    'float', 'int', 'bool', 'not', 'and', 'or', 'true', 'false', 'break', 'then'
 }
 
 def process_input(input_text):

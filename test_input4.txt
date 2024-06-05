@@ -12,7 +12,7 @@ program {
         if(x<y and y>=0) then{
             c=true;
         } else {
-            x=x-2;
+            x=x+2;
             a=a*x+b;
             y=y-1;
         }
@@ -22,5 +22,8 @@ program {
             a=a+1;
             x=a-y;
         }
-    } until(c == true);
+    } until (c  == 13);
 }
+
+
+
