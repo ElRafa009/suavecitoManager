@@ -216,10 +216,17 @@ def p_empty(p):
 # Función para manejar los errores sintácticos
 def p_error(p):
     if p:
-        error_msg = f"Sintax Error: in '{p.value}' in line {p.lineno}."
+        error_msg = f"Syntax error at line {p.lineno}: Unexpected token '{p.value}'"
         syntax_errors.append(error_msg)
+        # Recuperación del parser
+        #tok = p.value
+        #print(f"Valor de tok: {tok}")
+        #while tok and tok not in [';', '{', '}', '(', ')']:
+        #    tok = parser.token()  # Obtener el siguiente token
+        #parser.errok()  # Restablecer el estado del parser
+        #print(f"Valor de p: {p.value}")
     else:
-        syntax_errors.append("Error de sintaxis en el final del archivo.")
+        syntax_errors.append("Syntax Error: Unexpected end of file.")
 
 # Construcción del parser
 parser = yacc.yacc()

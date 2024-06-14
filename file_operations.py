@@ -160,7 +160,7 @@ def run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, toke
             # Manejo de errores sintácticos
             # Mostrar errores en pantalla_errores
             pantalla_errores.config(state='normal')
-            pantalla_errores.delete(1.0, END)
+            #pantalla_errores.delete(1.0, END)
             if errors:
                 for error in errors:
                     mostrar_mensaje_en_rojo(pantalla_errores, error)

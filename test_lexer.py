@@ -1,4 +1,5 @@
 import lexer
+import sintac
 import argparse
 
 def test_lexer(input_text, source='console'):
@@ -18,6 +19,18 @@ def test_lexer(input_text, source='console'):
 
     return tokens, errors
 
+def test_parser(tokens):
+    result, errors = sintac.parse_code(tokens)
+    for error in errors:
+        print(error)
+    return result
+
+def tokens_to_text(tokens):
+    """
+    Convierte una lista de tokens en texto plano.
+    """
+    return ' '.join(str(token.value) for token in tokens)
+
 def main():
     parser = argparse.ArgumentParser(description='Lexer Test Script')
     parser.add_argument('input', type=str, help='Input text or path to input file')
@@ -34,7 +47,15 @@ def main():
         input_text = args.input
 
     # Ejecutar el análisis léxico
-    tokens = test_lexer(input_text, source='console')
+    print("### Lexer Output ###")
+    tokens, _ = test_lexer(input_text, source='console')
+
+    # Ejecutar el análisis sintáctico
+    print("\n### Parser Output ###")
+    input_tokens = tokens_to_text(tokens)
+    result = test_parser(input_tokens)
+    if result:
+        print("Analisis sintactico correcto")
 
 if __name__ == '__main__':
     main()

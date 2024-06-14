@@ -42,10 +42,16 @@ def t_COMMENT_SINGLELINE(t):
     pass  # Ignorar los comentarios de una sola línea
 
 # Regla para comentarios de varias líneas
+# Regla para comentarios de varias líneas
 def t_COMMENT_MULTILINE(t):
     r'\/\*(.|\n)*?\*\/'
-    t.lexer.lineno += t.value.count('\n')  # Incrementar el número de líneas según la cantidad de saltos de línea
-    t.lexer.lexpos += len(t.value)  # Incrementar el índice léxico para continuar desde el final del comentario
+    # Incrementar el número de líneas según la cantidad de saltos de línea dentro del comentario
+    t.lexer.lineno += t.value.count('\n')
+    # Encontrar la última posición de '\n' dentro del comentario
+    last_newline_pos = t.value.rfind('\n', 0, t.lexpos)
+    # Si encontramos un salto de línea dentro del comentario, ajustar la posición léxica
+    if last_newline_pos != -1:
+        t.lexer.lexpos = last_newline_pos + 1
     pass  # Ignorar los comentarios de varias líneas
 
 

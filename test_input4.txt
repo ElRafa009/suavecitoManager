@@ -5,7 +5,6 @@ program {
     c = false;
     x=5; // comentario 1
     y=4; /* comentario 2 */
-    6
     a=0.0;
     b=3.0;
     do {
@@ -24,6 +23,3 @@ program {
         }
     } until (c  == 13);
 }
-
-
-
