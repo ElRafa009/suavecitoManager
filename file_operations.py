@@ -4,7 +4,33 @@ from lexer import reset_lexer
 from test_lexer import test_lexer
 from sintac import calculate_levels, parse_code, parser
 
+
 ruta = "" # La utilizaremos para almacenar la ruta del archivo
+
+class SymbolTable:
+    def __init__(self):
+        self.scopes = [{}]  # Una lista de diccionarios, cada diccionario es un scope.
+
+    def add(self, symbol):
+        current_scope = self.scopes[-1]
+        if symbol.name in current_scope:
+            raise ValueError(f"Error: La variable '{symbol.name}' ya ha sido declarada en este ámbito.")
+        current_scope[symbol.name] = symbol
+
+    def lookup(self, name):
+        # Buscamos en el scope más profundo primero
+        for scope in reversed(self.scopes):
+            if name in scope:
+                return scope[name]
+        return None
+
+    def enter_scope(self):
+        self.scopes.append({})
+
+    def exit_scope(self):
+        self.scopes.pop()
+
+  
 
 # Crear un archivo nuevo
 def nuevo(root, mensaje, texto):
@@ -68,7 +94,7 @@ def mostrar_mensaje_en_rojo(pantalla_errores, mensaje):
         pantalla_errores.see('end')  # Desplazar la pantalla hacia abajo para mostrar el mensaje más reciente
 
 # Ejecutar análisis léxico sobre el archivo abierto
-def run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sintactico):
+def run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sintactico, frame_semantico):
     global ruta
     mensaje.set("Ejecutando análisis léxico...")
     
@@ -127,6 +153,7 @@ def run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sint
             # Ahora que el análisis léxico ha terminado correctamente, ejecutamos el análisis sintáctico
             texto = tokens_to_text(tokens)
             run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, tokens)
+            run_semantic_analysis(mensaje, texto, frame_semantico, pantalla_errores, tokens)
     else:
         mensaje.set("No hay archivo abierto para ejecutar análisis léxico.")
 
@@ -173,6 +200,65 @@ def run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, toke
 
     else:
         mensaje.set("No hay archivo abierto para ejecutar análisis sintáctico.")
+
+# Actualización de la lógica de análisis semántico
+def run_semantic_analysis(mensaje, texto, frame_semantico, pantalla_errores, tokens):
+    mensaje.set("Ejecutando análisis semántico...")
+
+    for child in frame_semantico.winfo_children():
+        child.destroy()
+
+    # Crear el Treeview para el árbol semántico
+    tree_semantico = ttk.Treeview(frame_semantico, columns=('Anotación'), show='headings')
+    tree_semantico.heading('Anotación', text='Árbol Semántico Anotado')
+    tree_semantico.pack(fill='both', expand=True)
+
+    # Crear el Treeview para la tabla de símbolos
+    tree_simbolos = ttk.Treeview(frame_semantico, columns=('Variable', 'Número de Línea', 'Valor', 'Tipo'), show='headings')
+    tree_simbolos.heading('Variable', text='Variable')
+    tree_simbolos.heading('Número de Línea', text='Número de Línea')
+    tree_simbolos.heading('Valor', text='Valor')
+    tree_simbolos.heading('Tipo', text='Tipo')
+    tree_simbolos.pack(fill='both', expand=True)
+
+    tree_simbolos.column('Variable', width=150, anchor='center')
+    tree_simbolos.column('Número de Línea', width=100, anchor='center')
+    tree_simbolos.column('Valor', width=100, anchor='center')
+    tree_simbolos.column('Tipo', width=100, anchor='center')
+
+    symbols_table = []
+
+    for i, token in enumerate(tokens):
+        if token.type == "IDENTIFIER":
+            symbol_name = token.value
+            symbol_line = token.lineno
+
+            if i > 0 and tokens[i-1].type in ["int", "float", "string", "bool"]:
+                symbol_type = tokens[i-1].type
+            else:
+                symbol_type = "unknown"
+
+            symbol_value = None
+            if i + 2 < len(tokens) and tokens[i + 1].type == "ASSIGN":
+                symbol_value = tokens[i + 2].value
+
+            symbol = {
+                "name": symbol_name,
+                "line": symbol_line,
+                "value": symbol_value,
+                "type": symbol_type
+            }
+            symbols_table.append(symbol)
+
+            # Insertar el nodo en el árbol semántico
+            parent_node = tree_semantico.insert('', 'end', text=f"Variable: {symbol_name} (línea {symbol_line})", values=(symbol_value,))
+            tree_simbolos.insert('', 'end', values=(symbol_name, symbol_line, symbol_value, symbol_type))
+
+            # Aquí puedes agregar más nodos o anotaciones si es necesario
+            # Por ejemplo, para cada declaración, podrías agregar su tipo o valor
+
+    mensaje.set("Análisis semántico completado.")
+
 
 def tokens_to_text(tokens):
     """

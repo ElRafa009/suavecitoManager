@@ -4,6 +4,7 @@ from graphviz import Digraph
 
 # Lista global para almacenar errores sintácticos
 syntax_errors = []
+semantic_errors =[]
 
 # Nodo del árbol sintáctico abstracto
 class ASTNode:
