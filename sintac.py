@@ -219,13 +219,11 @@ def p_error(p):
     if p:
         error_msg = f"Syntax error at line {p.lineno}: Unexpected token '{p.value}'"
         syntax_errors.append(error_msg)
-        # Recuperación del parser
-        #tok = p.value
-        #print(f"Valor de tok: {tok}")
-        #while tok and tok not in [';', '{', '}', '(', ')']:
-        #    tok = parser.token()  # Obtener el siguiente token
-        #parser.errok()  # Restablecer el estado del parser
-        #print(f"Valor de p: {p.value}")
+        while True:
+            tok = parser.token()  # Obtener el siguiente token
+            if not tok or tok.type == 'SEMICOLON':  # Punto de recuperación
+                break
+        parser.errok()  # Recuperación del estado del parser
     else:
         syntax_errors.append("Syntax Error: Unexpected end of file.")
 
