@@ -134,9 +134,11 @@ def run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, toke
     mensaje.set("Ejecutando análisis sintáctico...")
 
     if tokens:
+        # Limpiar el Treeview si ya tiene elementos
         for child in frame_sintactico.winfo_children():
             child.destroy()
 
+        # Crear el Treeview para el árbol sintáctico
         tree = ttk.Treeview(frame_sintactico, columns=('Nodo', 'Valor'), show='headings')
         tree.heading('Nodo', text='Nodo')
         tree.heading('Valor', text='Valor')
@@ -145,32 +147,32 @@ def run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, toke
         tree.column('Nodo', width=150, anchor='center')
         tree.column('Valor', width=150, anchor='center')
 
+        # Ejecutar el análisis sintáctico
         result, errors = parse_code(texto)
 
         if result:
             calculate_levels(result)
+            
+            # Función para agregar nodos recursivamente
             def add_nodes(tree, node, parent=''):
-                tree.insert(parent, 'end', text=str(node), values=(node.type, node.level))
+                # Añadir el nodo actual al Treeview
+                tree_id = tree.insert(parent, 'end', text=str(node), values=(node.type,node.leaf if node.leaf else node.type), open=True)
+                # Iterar sobre los hijos del nodo y añadirlos recursivamente
                 for child in node.children:
-                    add_nodes(tree, child, parent)
+                    add_nodes(tree, child, tree_id)
 
+            # Comenzar desde la raíz del árbol
             add_nodes(tree, result)
+
             mensaje.set("Análisis sintáctico completado.")
         else:
             # Manejo de errores sintácticos
-            # Mostrar errores en pantalla_errores
             pantalla_errores.config(state='normal')
-            #pantalla_errores.delete(1.0, END)
             if errors:
                 for error in errors:
                     mostrar_mensaje_en_rojo(pantalla_errores, error)
             mensaje.set("Análisis sintáctico fallido.")
             pantalla_errores.config(state='disabled')
-            #error_message = result
-            #mensaje.set(error_message)
-            #mostrar_mensaje_en_rojo(pantalla_errores, error_message)
-            #mensaje.set("Análisis sintáctico fallido.")
-
     else:
         mensaje.set("No hay archivo abierto para ejecutar análisis sintáctico.")
 

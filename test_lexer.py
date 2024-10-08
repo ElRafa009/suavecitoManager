@@ -19,8 +19,8 @@ def test_lexer(input_text, source='console'):
 
     return tokens, errors
 
-def test_parser(tokens):
-    result, errors = sintac.parse_code(tokens)
+def test_parser(code):
+    result, errors = sintac.parse_code(code)
     for error in errors:
         print(error)
     return result

@@ -40,6 +40,7 @@ def create_editor():
     frame_derecha = Frame(frame_principal)
     frame_derecha.pack(side='right', fill='both', expand=True)
     tab_control_analisis = ttk.Notebook(frame_derecha)
+    
     # Pestaña para Análisis Léxico
     frame_lexico = ttk.Frame(tab_control_analisis)
     tab_control_analisis.add(frame_lexico, text='Análisis Léxico')
@@ -47,6 +48,10 @@ def create_editor():
     # Pestaña para Análisis Sintáctico
     frame_sintactico = ttk.Frame(tab_control_analisis)
     tab_control_analisis.add(frame_sintactico, text='Análisis Sintáctico')
+
+    # Pestaña para Árbol Semántico
+    frame_semantico = ttk.Frame(tab_control_analisis)
+    tab_control_analisis.add(frame_semantico, text='Árbol Semántico')
         
     tab_control_analisis.pack(fill='both', expand=True, padx=margen_x, pady=margen_y)
 
