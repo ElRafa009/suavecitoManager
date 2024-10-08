@@ -68,7 +68,7 @@ def mostrar_mensaje_en_rojo(pantalla_errores, mensaje):
         pantalla_errores.see('end')  # Desplazar la pantalla hacia abajo para mostrar el mensaje más reciente
 
 # Ejecutar análisis léxico sobre el archivo abierto
-def run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sintactico):
+def run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sintactico, frame_semantico):
     global ruta
     mensaje.set("Ejecutando análisis léxico...")
     
@@ -126,7 +126,11 @@ def run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sint
             pantalla_errores.config(state='disabled')
             # Ahora que el análisis léxico ha terminado correctamente, ejecutamos el análisis sintáctico
             texto = tokens_to_text(tokens)
-            run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, tokens)
+            # Ejecutar el análisis sintáctico
+            run_syntax_analysis(mensaje, tokens_to_text(tokens), frame_sintactico, pantalla_errores, tokens)
+
+            # Ejecutar el análisis semántico
+            #run_semantic_analysis(mensaje, frame_semantico, pantalla_errores, tokens)
     else:
         mensaje.set("No hay archivo abierto para ejecutar análisis léxico.")
 

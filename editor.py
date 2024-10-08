@@ -85,7 +85,7 @@ def create_editor():
 
     # Menu superior y botones
     create_menu(root, mensaje, texto)
-    create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_lexico, frame_sintactico)
+    create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_lexico, frame_sintactico, frame_semantico)
 
     # Bucle de la aplicacion
     root.mainloop()
