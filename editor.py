@@ -48,12 +48,13 @@ def create_editor():
     # Pestaña para Análisis Sintáctico
     frame_sintactico = ttk.Frame(tab_control_analisis)
     tab_control_analisis.add(frame_sintactico, text='Análisis Sintáctico')
-
+    
     # Pestaña para Árbol Semántico
     frame_semantico = ttk.Frame(tab_control_analisis)
     tab_control_analisis.add(frame_semantico, text='Árbol Semántico')
         
     tab_control_analisis.pack(fill='both', expand=True, padx=margen_x, pady=margen_y)
+    #tab_control_analisis.pack(fill='both', expand=True, padx=margen_x, pady=margen_y)
 
     # Monitor inferior
     mensaje = StringVar()
@@ -85,7 +86,7 @@ def create_editor():
 
     # Menu superior y botones
     create_menu(root, mensaje, texto)
-    create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_lexico, frame_sintactico)
+    create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_lexico, frame_sintactico, frame_semantico)
 
     # Bucle de la aplicacion
     root.mainloop()
