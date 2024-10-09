@@ -16,7 +16,7 @@ Rule 5     decl -> tipo list_id SEMICOLON
 Rule 6     tipo -> INT
 Rule 7     tipo -> FLOAT
 Rule 8     tipo -> BOOL
-Rule 9     list_id -> list_id COMMA IDENTIFIER
+Rule 9     list_id -> IDENTIFIER COMMA list_id
 Rule 10    list_id -> IDENTIFIER
 Rule 11    list_sent -> list_sent sent
 Rule 12    list_sent -> sent
@@ -323,7 +323,7 @@ state 6
 state 7
 
     (5) decl -> tipo . list_id SEMICOLON
-    (9) list_id -> . list_id COMMA IDENTIFIER
+    (9) list_id -> . IDENTIFIER COMMA list_id
     (10) list_id -> . IDENTIFIER
 
     IDENTIFIER      shift and go to state 31
@@ -717,18 +717,17 @@ state 29
 state 30
 
     (5) decl -> tipo list_id . SEMICOLON
-    (9) list_id -> list_id . COMMA IDENTIFIER
 
     SEMICOLON       shift and go to state 57
-    COMMA           shift and go to state 58
 
 
 state 31
 
+    (9) list_id -> IDENTIFIER . COMMA list_id
     (10) list_id -> IDENTIFIER .
 
+    COMMA           shift and go to state 58
     SEMICOLON       reduce using rule 10 (list_id -> IDENTIFIER .)
-    COMMA           reduce using rule 10 (list_id -> IDENTIFIER .)
 
 
 state 32
@@ -1286,10 +1285,13 @@ state 57
 
 state 58
 
-    (9) list_id -> list_id COMMA . IDENTIFIER
+    (9) list_id -> IDENTIFIER COMMA . list_id
+    (9) list_id -> . IDENTIFIER COMMA list_id
+    (10) list_id -> . IDENTIFIER
 
-    IDENTIFIER      shift and go to state 89
+    IDENTIFIER      shift and go to state 31
 
+    list_id                        shift and go to state 89
 
 state 59
 
@@ -1903,10 +1905,9 @@ state 88
 
 state 89
 
-    (9) list_id -> list_id COMMA IDENTIFIER .
+    (9) list_id -> IDENTIFIER COMMA list_id .
 
-    SEMICOLON       reduce using rule 9 (list_id -> list_id COMMA IDENTIFIER .)
-    COMMA           reduce using rule 9 (list_id -> list_id COMMA IDENTIFIER .)
+    SEMICOLON       reduce using rule 9 (list_id -> IDENTIFIER COMMA list_id .)
 
 
 state 90

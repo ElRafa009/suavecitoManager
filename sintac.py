@@ -53,10 +53,10 @@ def p_tipo(p):
     p[0] = ASTNode('tipo', leaf=p[1])
 
 def p_list_id(p):
-    '''list_id : list_id COMMA IDENTIFIER
+    '''list_id : IDENTIFIER COMMA list_id
                | IDENTIFIER'''
     if len(p) == 4:
-        p[0] = ASTNode('list_id', [p[1], ASTNode('identifier', leaf=p[3])])
+        p[0] = ASTNode('list_id', [ASTNode('identifier', leaf=p[1]), p[3]])
     else:
         p[0] = ASTNode('list_id', [ASTNode('identifier', leaf=p[1])])
 
