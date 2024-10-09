@@ -1,6 +1,7 @@
 from tkinter import END, Scrollbar, filedialog as FileDialog, ttk
 from io import open
 from lexer import reset_lexer
+from semantic import SemanticAnalyzer, SemanticError
 from test_lexer import test_lexer
 from sintac import calculate_levels, parse_code, parser
 
@@ -86,11 +87,15 @@ def run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sint
         # Reiniciar el contador de líneas en el lexer
         reset_lexer()
         
-        # Limpiar la tabla si ya tiene elementos
+        # Limpiar tabla léxica, sintáctica y semántica
         for child in frame_lexico.winfo_children():
             child.destroy()
+        for child in frame_sintactico.winfo_children():
+            child.destroy()
+        for child in frame_semantico.winfo_children():
+            child.destroy()
 
-        # Crear encabezados de la tabla
+        # Crear tabla de tokens
         tree = ttk.Treeview(frame_lexico, columns=('Token', 'Lexema', 'Fila', 'Columna'), show='headings')
         tree.heading('Token', text='Token')
         tree.heading('Lexema', text='Lexema')
@@ -126,22 +131,17 @@ def run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sint
             pantalla_errores.config(state='disabled')
             # Ahora que el análisis léxico ha terminado correctamente, ejecutamos el análisis sintáctico
             texto = tokens_to_text(tokens)
-            # Ejecutar el análisis sintáctico
-            run_syntax_analysis(mensaje, tokens_to_text(tokens), frame_sintactico, pantalla_errores, tokens)
 
-            # Ejecutar el análisis semántico
-            #run_semantic_analysis(mensaje, frame_semantico, pantalla_errores, tokens)
+            # Ejecutar el análisis sintáctico
+            run_syntax_analysis(mensaje, tokens_to_text(tokens), frame_sintactico, pantalla_errores, tokens, frame_semantico)
+
     else:
         mensaje.set("No hay archivo abierto para ejecutar análisis léxico.")
 
-def run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, tokens):
+def run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, tokens, frame_semantico):
     mensaje.set("Ejecutando análisis sintáctico...")
 
     if tokens:
-        # Limpiar el Treeview si ya tiene elementos
-        for child in frame_sintactico.winfo_children():
-            child.destroy()
-
         # Crear el Treeview para el árbol sintáctico
         tree = ttk.Treeview(frame_sintactico, columns=('Nodo', 'Valor'), show='headings')
         tree.heading('Nodo', text='Nodo')
@@ -169,6 +169,9 @@ def run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, toke
             add_nodes(tree, result)
 
             mensaje.set("Análisis sintáctico completado.")
+            # Ejecutar análisis semántico
+
+            run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores)
         else:
             # Manejo de errores sintácticos
             pantalla_errores.config(state='normal')
@@ -179,6 +182,54 @@ def run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, toke
             pantalla_errores.config(state='disabled')
     else:
         mensaje.set("No hay archivo abierto para ejecutar análisis sintáctico.")
+
+# Función para el análisis semántico
+def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores):
+    mensaje.set("Ejecutando análisis semántico...")
+    
+    # Crear TreeView para árbol semántico
+    tree = ttk.Treeview(frame_semantico, columns=('Nodo', 'Anotación'), show='headings')
+    tree.heading('Nodo', text='Nodo')
+    tree.heading('Anotación', text='Anotación')
+    tree.pack(fill='both', expand=True)
+    tree.column('Nodo', width=150, anchor='center')
+    tree.column('Anotación', width=150, anchor='center')
+
+    # Crear instancia del analizador semántico
+    analyzer = SemanticAnalyzer()
+    errors = []  # Lista para almacenar errores semánticos
+
+    try:
+        # Realizar análisis semántico
+        analyzer.analyze(result)
+
+        # Función para agregar nodos con anotaciones
+        def add_semantic_nodes(tree, node, parent=''):
+            annotation = getattr(node, 'semantic_annotation', "Sin anotación")
+            tree_id = tree.insert(parent, 'end', text=str(node), values=(node.type, annotation), open=True)
+
+            # Propagar las anotaciones a los nodos hijos
+            for child in node.children:
+                # Propagar la anotación correspondiente al nodo hijo
+                child.semantic_annotation = annotation  # Asignar la anotación al nodo hijo
+                add_semantic_nodes(tree, child, tree_id)
+
+        # Comenzar a agregar nodos desde la raíz del árbol sintáctico
+        add_semantic_nodes(tree, result)
+
+        mensaje.set("Análisis semántico completado.")
+    except SemanticError as e:
+        # Manejo de errores semánticos
+        errors.append(str(e))
+        mostrar_mensaje_en_rojo(pantalla_errores, str(e))
+        mensaje.set("Errores en análisis semántico.")
+
+    # Mostrar errores si hay alguno
+    if errors:
+        pantalla_errores.config(state='normal')
+        for error in errors:
+            mostrar_mensaje_en_rojo(pantalla_errores, error)
+        pantalla_errores.config(state='disabled')
 
 def tokens_to_text(tokens):
     """
