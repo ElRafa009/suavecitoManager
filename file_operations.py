@@ -63,6 +63,7 @@ def guardar_como(root, mensaje, texto):
         ruta = ""
 
 def mostrar_mensaje_en_rojo(pantalla_errores, mensaje):
+        print(f"Mostrando mensaje: {mensaje}")  # Depuración
         pantalla_errores.config(state='normal', fg='red')  # Habilitar la edición para agregar texto en rojo
         pantalla_errores.insert('end', mensaje + '\n')  # Insertar el mensaje y un salto de línea
         pantalla_errores.config(state='disabled')  # Deshabilitar la edición para que sea solo de lectura
@@ -206,7 +207,7 @@ def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores):
         # Función para agregar nodos con anotaciones
         def add_semantic_nodes(tree, node, parent=''):
             annotation = getattr(node, 'semantic_annotation', "Sin anotación")
-            tree_id = tree.insert(parent, 'end', text=str(node), values=(node.type, annotation), open=True)
+            tree_id = tree.insert(parent, 'end', text=str(node), values=(node.leaf if node.leaf else node.type, annotation), open=True)
 
             # Propagar las anotaciones a los nodos hijos
             for child in node.children:
@@ -219,6 +220,7 @@ def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores):
     except SemanticError as e:
         # Manejo de errores semánticos
         errors.append(str(e))
+        print(f"Error semántico: {e}")  # Mensaje de depuración
         mostrar_mensaje_en_rojo(pantalla_errores, str(e))
         mensaje.set("Errores en análisis semántico.")
 
