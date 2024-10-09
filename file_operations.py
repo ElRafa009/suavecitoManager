@@ -239,7 +239,7 @@ def tokens_to_text(tokens):
 
 def highlight_syntax(texto):
     
-    keywords = ['int', 'float', 'if', 'else', 'for', 'while', 'do']
+    keywords = ['int', 'float', 'if', 'else', 'for', 'while', 'do', 'bool']
 
     # Borrar estilos anteriores
     texto.tag_remove('keyword', '1.0', 'end')

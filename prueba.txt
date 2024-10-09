@@ -1,3 +1,5 @@
 program {
     int x, y, z;
+    float a, b, c;
+    bool g;
 }
