@@ -6,7 +6,11 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
+<<<<<<< Updated upstream
 _lr_signature = 'AND ASSIGN BOOL BREAK COMMA DIVIDE DO ELSE EQ FALSE FI FLOAT GE GT IDENTIFIER IF INT LBRACE LE LPAREN LT MINUS NE NOT NUMBER OR PLUS POWER PROGRAM RBRACE READ RPAREN SEMICOLON TB THEN TIMES TRUE UNTIL WHILE WRITEprogram : PROGRAM LBRACE list_decl list_sent RBRACElist_decl : list_decl decl\n                 | decl\n                 | emptydecl : tipo list_id SEMICOLONtipo : INT\n            | FLOAT\n            | BOOLlist_id : list_id COMMA IDENTIFIER\n               | IDENTIFIERlist_sent : list_sent sent\n                 | sent\n                 | emptysent : sent_if\n            | sent_while\n            | sent_do\n            | sent_read\n            | sent_write\n            | bloque\n            | sent_assign\n            | BREAKsent_if : IF LPAREN exp_bool RPAREN THEN bloque else_part FIelse_part : ELSE bloque\n                 | emptysent_while : WHILE LPAREN exp_bool RPAREN bloquesent_do : DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLONsent_read : READ IDENTIFIER SEMICOLONsent_write : WRITE exp_bool_or_value SEMICOLONexp_value : NUMBER\n                 | IDENTIFIERbloque : LBRACE list_sent RBRACEsent_assign : IDENTIFIER ASSIGN expr SEMICOLONsent_assign : IDENTIFIER ASSIGN exp_bool SEMICOLONsent_assign : IDENTIFIER ASSIGN factor SEMICOLONexp_bool : exp_bool OR comb\n                | combexp_bool_or_value : exp_bool\n                         | exp_valuecomb : comb AND igualdad\n            | igualdadigualdad : igualdad EQ rel\n                | igualdad NE rel\n                | relrel : expr op_rel exprop_rel : LT\n              | LE\n              | GT\n              | GE\n              | EQ\n              | NEexpr : expr PLUS term\n            | expr MINUS term\n            | termterm : term TIMES unario\n            | term DIVIDE unario\n            | unariounario : PLUS unario\n              | MINUS unario\n              | factorfactor : NUMBER\n              | IDENTIFIER\n              | TRUE\n              | FALSE\n              | LPAREN exp_bool RPARENempty :'
+=======
+_lr_signature = 'AND ASSIGN BOOL BREAK COMMA DIVIDE DO ELSE EQ FALSE FI FLOAT GE GT IDENTIFIER IF INT LBRACE LE LPAREN LT MINUS NE NOT NUMBER OR PLUS POWER PROGRAM RBRACE READ RPAREN SEMICOLON THEN TIMES TRUE UNTIL WHILE WRITEprogram : PROGRAM LBRACE list_decl list_sent RBRACElist_decl : list_decl decl\n                 | decl\n                 | emptydecl : tipo list_id SEMICOLONtipo : INT\n            | FLOAT\n            | BOOLlist_id : list_id COMMA IDENTIFIER\n               | IDENTIFIERlist_sent : list_sent sent\n                 | sent\n                 | emptysent : sent_if\n            | sent_while\n            | sent_do\n            | sent_read\n            | sent_write\n            | bloque\n            | sent_assign\n            | BREAKsent_if : IF LPAREN exp_bool RPAREN THEN bloque else_part FIelse_part : ELSE bloque\n                 | emptysent_while : WHILE LPAREN exp_bool RPAREN bloquesent_do : DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLONsent_read : READ IDENTIFIER SEMICOLONsent_write : WRITE exp_bool_or_value SEMICOLONexp_value : NUMBER\n                 | IDENTIFIERbloque : LBRACE list_sent RBRACEsent_assign : IDENTIFIER ASSIGN expr SEMICOLONsent_assign : IDENTIFIER ASSIGN exp_bool SEMICOLONsent_assign : IDENTIFIER ASSIGN factor SEMICOLONexp_bool : exp_bool OR comb\n                | combexp_bool_or_value : exp_bool\n                         | exp_valuecomb : comb AND igualdad\n            | igualdadigualdad : igualdad EQ rel\n                | igualdad NE rel\n                | relrel : expr op_rel exprop_rel : LT\n              | LE\n              | GT\n              | GE\n              | EQ\n              | NEexpr : expr PLUS term\n            | expr MINUS term\n            | termterm : term TIMES unario\n            | term DIVIDE unario\n            | unariounario : PLUS unario\n              | MINUS unario\n              | factorfactor : NUMBER\n              | IDENTIFIER\n              | TRUE\n              | FALSE\n              | LPAREN exp_bool RPARENempty :'
+>>>>>>> Stashed changes
     
 _lr_action_items = {'PROGRAM':([0,],[2,]),'$end':([1,33,],[0,-1,]),'LBRACE':([2,3,4,5,6,11,12,13,14,15,16,17,18,19,20,21,22,23,26,32,34,57,59,65,69,90,92,93,94,105,106,111,113,114,],[3,-65,11,-3,-4,11,11,-2,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,11,11,-11,-5,-31,-27,-28,11,-32,-33,-34,11,-25,11,-26,-22,]),'BREAK':([3,4,5,6,11,12,13,14,15,16,17,18,19,20,21,22,23,32,34,57,59,65,69,92,93,94,106,113,114,],[-65,23,-3,-4,23,23,-2,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,23,-11,-5,-31,-27,-28,-32,-33,-34,-25,-26,-22,]),'INT':([3,4,5,6,13,57,],[8,8,-3,-4,-2,-5,]),'FLOAT':([3,4,5,6,13,57,],[9,9,-3,-4,-2,-5,]),'BOOL':([3,4,5,6,13,57,],[10,10,-3,-4,-2,-5,]),'IF':([3,4,5,6,11,12,13,14,15,16,17,18,19,20,21,22,23,32,34,57,59,65,69,92,93,94,106,113,114,],[-65,24,-3,-4,24,24,-2,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,24,-11,-5,-31,-27,-28,-32,-33,-34,-25,-26,-22,]),'WHILE':([3,4,5,6,11,12,13,14,15,16,17,18,19,20,21,22,23,32,34,57,59,65,69,92,93,94,106,113,114,],[-65,25,-3,-4,25,25,-2,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,25,-11,-5,-31,-27,-28,-32,-33,-34,-25,-26,-22,]),'DO':([3,4,5,6,11,12,13,14,15,16,17,18,19,20,21,22,23,32,34,57,59,65,69,92,93,94,106,113,114,],[-65,26,-3,-4,26,26,-2,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,26,-11,-5,-31,-27,-28,-32,-33,-34,-25,-26,-22,]),'READ':([3,4,5,6,11,12,13,14,15,16,17,18,19,20,21,22,23,32,34,57,59,65,69,92,93,94,106,113,114,],[-65,27,-3,-4,27,27,-2,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,27,-11,-5,-31,-27,-28,-32,-33,-34,-25,-26,-22,]),'WRITE':([3,4,5,6,11,12,13,14,15,16,17,18,19,20,21,22,23,32,34,57,59,65,69,92,93,94,106,113,114,],[-65,29,-3,-4,29,29,-2,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,29,-11,-5,-31,-27,-28,-32,-33,-34,-25,-26,-22,]),'IDENTIFIER':([3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,27,29,32,34,35,36,39,49,51,56,57,58,59,65,69,70,71,72,73,74,75,76,77,78,79,80,81,82,84,85,91,92,93,94,106,113,114,],[-65,28,-3,-4,31,-6,-7,-8,28,28,-2,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,38,45,28,-11,62,62,62,62,62,62,-5,88,-31,-27,-28,62,62,62,62,62,62,62,-45,-46,-47,-48,-49,-50,62,62,62,-32,-33,-34,-25,-26,-22,]),'RBRACE':([3,4,5,6,11,12,13,14,15,16,17,18,19,20,21,22,23,32,34,57,59,65,69,92,93,94,106,113,114,],[-65,-65,-3,-4,-65,33,-2,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,59,-11,-5,-31,-27,-28,-32,-33,-34,-25,-26,-22,]),'LPAREN':([24,25,29,35,36,39,49,51,56,64,70,71,72,73,74,75,76,77,78,79,80,81,82,84,85,91,],[35,36,56,56,56,56,56,56,56,91,56,56,56,56,56,56,56,-45,-46,-47,-48,-49,-50,56,56,56,]),'ASSIGN':([28,],[39,]),'NUMBER':([29,35,36,39,49,51,56,70,71,72,73,74,75,76,77,78,79,80,81,82,84,85,91,],[44,61,61,61,61,61,61,61,61,61,61,61,61,61,-45,-46,-47,-48,-49,-50,61,61,61,]),'PLUS':([29,35,36,39,44,45,48,49,50,51,52,53,54,55,56,61,62,66,68,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,91,99,100,101,102,103,104,],[49,49,49,49,-60,-61,75,49,-53,49,-56,-59,-62,-63,49,-60,-61,75,-59,49,49,49,49,49,49,49,-45,-46,-47,-48,-49,-50,-57,49,49,-58,49,75,-51,-52,-54,-55,-64,]),'MINUS':([29,35,36,39,44,45,48,49,50,51,52,53,54,55,56,61,62,66,68,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,91,99,100,101,102,103,104,],[51,51,51,51,-60,-61,76,51,-53,51,-56,-59,-62,-63,51,-60,-61,76,-59,51,51,51,51,51,51,51,-45,-46,-47,-48,-49,-50,-57,51,51,-58,51,76,-51,-52,-54,-55,-64,]),'TRUE':([29,35,36,39,49,51,56,70,71,72,73,74,75,76,77,78,79,80,81,82,84,85,91,],[54,54,54,54,54,54,54,54,54,54,54,54,54,54,-45,-46,-47,-48,-49,-50,54,54,54,]),'FALSE':([29,35,36,39,49,51,56,70,71,72,73,74,75,76,77,78,79,80,81,82,84,85,91,],[55,55,55,55,55,55,55,55,55,55,55,55,55,55,-45,-46,-47,-48,-49,-50,55,55,55,]),'SEMICOLON':([30,31,38,40,41,42,43,44,45,46,47,50,52,53,54,55,61,62,66,67,68,83,86,88,95,96,97,98,99,100,101,102,103,104,109,],[57,-10,65,69,-37,-38,-36,-29,-30,-40,-43,-53,-56,-59,-62,-63,-60,-61,92,93,94,-57,-58,-9,-35,-39,-41,-42,-44,-51,-52,-54,-55,-64,113,]),'COMMA':([30,31,88,],[58,-10,-9,]),'UNTIL':([37,59,],[64,-31,]),'OR':([41,43,46,47,50,52,53,54,55,60,61,62,63,67,83,86,87,95,96,97,98,99,100,101,102,103,104,107,],[70,-36,-40,-43,-53,-56,-59,-62,-63,70,-60,-61,70,70,-57,-58,70,-35,-39,-41,-42,-44,-51,-52,-54,-55,-64,70,]),'RPAREN':([43,46,47,50,52,53,54,55,60,61,62,63,83,86,87,95,96,97,98,99,100,101,102,103,104,107,],[-36,-40,-43,-53,-56,-59,-62,-63,89,-60,-61,90,-57,-58,104,-35,-39,-41,-42,-44,-51,-52,-54,-55,-64,109,]),'AND':([43,46,47,50,52,53,54,55,61,62,83,86,95,96,97,98,99,100,101,102,103,104,],[71,-40,-43,-53,-56,-59,-62,-63,-60,-61,-57,-58,71,-39,-41,-42,-44,-51,-52,-54,-55,-64,]),'TIMES':([44,45,50,52,53,54,55,61,62,68,83,86,100,101,102,103,104,],[-60,-61,84,-56,-59,-62,-63,-60,-61,-59,-57,-58,84,84,-54,-55,-64,]),'DIVIDE':([44,45,50,52,53,54,55,61,62,68,83,86,100,101,102,103,104,],[-60,-61,85,-56,-59,-62,-63,-60,-61,-59,-57,-58,85,85,-54,-55,-64,]),'LT':([44,45,48,50,52,53,54,55,61,62,66,68,83,86,100,101,102,103,104,],[-60,-61,77,-53,-56,-59,-62,-63,-60,-61,77,-59,-57,-58,-51,-52,-54,-55,-64,]),'LE':([44,45,48,50,52,53,54,55,61,62,66,68,83,86,100,101,102,103,104,],[-60,-61,78,-53,-56,-59,-62,-63,-60,-61,78,-59,-57,-58,-51,-52,-54,-55,-64,]),'GT':([44,45,48,50,52,53,54,55,61,62,66,68,83,86,100,101,102,103,104,],[-60,-61,79,-53,-56,-59,-62,-63,-60,-61,79,-59,-57,-58,-51,-52,-54,-55,-64,]),'GE':([44,45,48,50,52,53,54,55,61,62,66,68,83,86,100,101,102,103,104,],[-60,-61,80,-53,-56,-59,-62,-63,-60,-61,80,-59,-57,-58,-51,-52,-54,-55,-64,]),'EQ':([44,45,46,47,48,50,52,53,54,55,61,62,66,68,83,86,96,97,98,99,100,101,102,103,104,],[-60,-61,72,-43,81,-53,-56,-59,-62,-63,-60,-61,81,-59,-57,-58,72,-41,-42,-44,-51,-52,-54,-55,-64,]),'NE':([44,45,46,47,48,50,52,53,54,55,61,62,66,68,83,86,96,97,98,99,100,101,102,103,104,],[-60,-61,73,-43,82,-53,-56,-59,-62,-63,-60,-61,82,-59,-57,-58,73,-41,-42,-44,-51,-52,-54,-55,-64,]),'ELSE':([59,108,],[-31,111,]),'FI':([59,108,110,112,115,],[-31,-65,114,-24,-23,]),'THEN':([89,],[105,]),}
 
@@ -27,6 +31,7 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> program","S'",1,None,None,None),
+<<<<<<< Updated upstream
   ('program -> PROGRAM LBRACE list_decl list_sent RBRACE','program',5,'p_program','sintac.py',33),
   ('list_decl -> list_decl decl','list_decl',2,'p_list_decl','sintac.py',37),
   ('list_decl -> decl','list_decl',1,'p_list_decl','sintac.py',38),
@@ -92,4 +97,71 @@ _lr_productions = [
   ('factor -> FALSE','factor',1,'p_factor','sintac.py',205),
   ('factor -> LPAREN exp_bool RPAREN','factor',3,'p_factor','sintac.py',206),
   ('empty -> <empty>','empty',0,'p_empty','sintac.py',213),
+=======
+  ('program -> PROGRAM LBRACE list_decl list_sent RBRACE','program',5,'p_program','sintac.py',34),
+  ('list_decl -> list_decl decl','list_decl',2,'p_list_decl','sintac.py',38),
+  ('list_decl -> decl','list_decl',1,'p_list_decl','sintac.py',39),
+  ('list_decl -> empty','list_decl',1,'p_list_decl','sintac.py',40),
+  ('decl -> tipo list_id SEMICOLON','decl',3,'p_decl','sintac.py',47),
+  ('tipo -> INT','tipo',1,'p_tipo','sintac.py',51),
+  ('tipo -> FLOAT','tipo',1,'p_tipo','sintac.py',52),
+  ('tipo -> BOOL','tipo',1,'p_tipo','sintac.py',53),
+  ('list_id -> list_id COMMA IDENTIFIER','list_id',3,'p_list_id','sintac.py',57),
+  ('list_id -> IDENTIFIER','list_id',1,'p_list_id','sintac.py',58),
+  ('list_sent -> list_sent sent','list_sent',2,'p_list_sent','sintac.py',65),
+  ('list_sent -> sent','list_sent',1,'p_list_sent','sintac.py',66),
+  ('list_sent -> empty','list_sent',1,'p_list_sent','sintac.py',67),
+  ('sent -> sent_if','sent',1,'p_sent','sintac.py',74),
+  ('sent -> sent_while','sent',1,'p_sent','sintac.py',75),
+  ('sent -> sent_do','sent',1,'p_sent','sintac.py',76),
+  ('sent -> sent_read','sent',1,'p_sent','sintac.py',77),
+  ('sent -> sent_write','sent',1,'p_sent','sintac.py',78),
+  ('sent -> bloque','sent',1,'p_sent','sintac.py',79),
+  ('sent -> sent_assign','sent',1,'p_sent','sintac.py',80),
+  ('sent -> BREAK','sent',1,'p_sent','sintac.py',81),
+  ('sent_if -> IF LPAREN exp_bool RPAREN THEN bloque else_part FI','sent_if',8,'p_sent_if','sintac.py',85),
+  ('else_part -> ELSE bloque','else_part',2,'p_else_part','sintac.py',89),
+  ('else_part -> empty','else_part',1,'p_else_part','sintac.py',90),
+  ('sent_while -> WHILE LPAREN exp_bool RPAREN bloque','sent_while',5,'p_sent_while','sintac.py',94),
+  ('sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON','sent_do',7,'p_sent_do','sintac.py',98),
+  ('sent_read -> READ IDENTIFIER SEMICOLON','sent_read',3,'p_sent_read','sintac.py',102),
+  ('sent_write -> WRITE exp_bool_or_value SEMICOLON','sent_write',3,'p_sent_write','sintac.py',106),
+  ('exp_value -> NUMBER','exp_value',1,'p_exp_value','sintac.py',110),
+  ('exp_value -> IDENTIFIER','exp_value',1,'p_exp_value','sintac.py',111),
+  ('bloque -> LBRACE list_sent RBRACE','bloque',3,'p_bloque','sintac.py',115),
+  ('sent_assign -> IDENTIFIER ASSIGN expr SEMICOLON','sent_assign',4,'p_sent_assign_expr','sintac.py',119),
+  ('sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON','sent_assign',4,'p_sent_assign_exp_bool','sintac.py',123),
+  ('sent_assign -> IDENTIFIER ASSIGN factor SEMICOLON','sent_assign',4,'p_sent_assign_factor','sintac.py',127),
+  ('exp_bool -> exp_bool OR comb','exp_bool',3,'p_exp_bool','sintac.py',131),
+  ('exp_bool -> comb','exp_bool',1,'p_exp_bool','sintac.py',132),
+  ('exp_bool_or_value -> exp_bool','exp_bool_or_value',1,'p_exp_bool_or_value','sintac.py',139),
+  ('exp_bool_or_value -> exp_value','exp_bool_or_value',1,'p_exp_bool_or_value','sintac.py',140),
+  ('comb -> comb AND igualdad','comb',3,'p_comb','sintac.py',145),
+  ('comb -> igualdad','comb',1,'p_comb','sintac.py',146),
+  ('igualdad -> igualdad EQ rel','igualdad',3,'p_igualdad','sintac.py',153),
+  ('igualdad -> igualdad NE rel','igualdad',3,'p_igualdad','sintac.py',154),
+  ('igualdad -> rel','igualdad',1,'p_igualdad','sintac.py',155),
+  ('rel -> expr op_rel expr','rel',3,'p_rel','sintac.py',163),
+  ('op_rel -> LT','op_rel',1,'p_op_rel','sintac.py',167),
+  ('op_rel -> LE','op_rel',1,'p_op_rel','sintac.py',168),
+  ('op_rel -> GT','op_rel',1,'p_op_rel','sintac.py',169),
+  ('op_rel -> GE','op_rel',1,'p_op_rel','sintac.py',170),
+  ('op_rel -> EQ','op_rel',1,'p_op_rel','sintac.py',171),
+  ('op_rel -> NE','op_rel',1,'p_op_rel','sintac.py',172),
+  ('expr -> expr PLUS term','expr',3,'p_expr','sintac.py',176),
+  ('expr -> expr MINUS term','expr',3,'p_expr','sintac.py',177),
+  ('expr -> term','expr',1,'p_expr','sintac.py',178),
+  ('term -> term TIMES unario','term',3,'p_term','sintac.py',185),
+  ('term -> term DIVIDE unario','term',3,'p_term','sintac.py',186),
+  ('term -> unario','term',1,'p_term','sintac.py',187),
+  ('unario -> PLUS unario','unario',2,'p_unario','sintac.py',194),
+  ('unario -> MINUS unario','unario',2,'p_unario','sintac.py',195),
+  ('unario -> factor','unario',1,'p_unario','sintac.py',196),
+  ('factor -> NUMBER','factor',1,'p_factor','sintac.py',203),
+  ('factor -> IDENTIFIER','factor',1,'p_factor','sintac.py',204),
+  ('factor -> TRUE','factor',1,'p_factor','sintac.py',205),
+  ('factor -> FALSE','factor',1,'p_factor','sintac.py',206),
+  ('factor -> LPAREN exp_bool RPAREN','factor',3,'p_factor','sintac.py',207),
+  ('empty -> <empty>','empty',0,'p_empty','sintac.py',214),
+>>>>>>> Stashed changes
 ]
