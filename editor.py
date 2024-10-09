@@ -1,7 +1,38 @@
-from tkinter import Frame, Scrollbar, StringVar, Tk, Text, Label, ttk
-from file_operations import highlight_syntax, run_syntax_analysis
+from tkinter import Frame, Scrollbar, StringVar, Tk, Text, Label, ttk, Canvas
+from file_operations import highlight_syntax
 from menu import create_menu
 from buttons import create_buttons
+
+class TextWithLineNumbers(Frame):
+    def __init__(self, parent):
+        Frame.__init__(self, parent)
+        
+        # Crear el widget de texto
+        self.text = Text(self, wrap='word', bd=0, padx=6, font=("Consolas", 12), undo=True)
+        self.text.pack(side='right', fill='both', expand=True)
+        
+        # Crear el canvas para los números de línea
+        self.linenumbers = Canvas(self, width=30, bg='#f0f0f0')
+        self.linenumbers.pack(side='left', fill='y')
+        
+        # Configurar el evento para actualizar los números de línea
+        self.text.bind('<KeyRelease>', self.update_line_numbers)
+        self.text.bind('<MouseWheel>', self.update_line_numbers)
+        self.text.bind('<Button-1>', self.update_line_numbers)
+        
+        self.update_line_numbers()
+
+    def update_line_numbers(self, event=None):
+        self.linenumbers.delete("all")
+        i = self.text.index("@0,0")
+        while True:
+            dline = self.text.dlineinfo(i)
+            if dline is None:
+                break
+            y = dline[1]
+            linenum = str(i).split(".")[0]
+            self.linenumbers.create_text(2, y, anchor="nw", text=linenum, font=("Consolas", 12), fill="#333")
+            i = self.text.index(f"{i}+1line")
 
 def create_editor():
     root = Tk()
@@ -30,9 +61,11 @@ def create_editor():
     # Parte izquierda: editor de texto
     frame_izquierda = Frame(frame_principal)
     frame_izquierda.pack(side='left', fill='both', expand=True)
-    texto = Text(frame_izquierda, wrap='word', bd=0, padx=6, font=("Consolas", 12))
-    texto.pack(fill="both", expand=True, padx=margen_x, pady=margen_y)
-    
+    editor_con_lineas = TextWithLineNumbers(frame_izquierda)
+    editor_con_lineas.pack(fill="both", expand=True, padx=margen_x, pady=margen_y)
+
+    texto = editor_con_lineas.text  # Para acceder al widget de texto
+
     # Vincular evento de cambio de texto a la función de resaltado de sintaxis
     texto.bind('<KeyRelease>', lambda event: highlight_syntax(texto))
     

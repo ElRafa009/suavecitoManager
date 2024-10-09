@@ -128,6 +128,7 @@ def p_sent_assign_factor(p):
 
 def p_exp_bool(p):
     '''exp_bool : exp_bool OR comb
+                | exp_bool OR expr
                 | comb'''
     if len(p) == 4:
         p[0] = ASTNode('exp_bool', [p[1], ASTNode('operator', leaf=p[2]), p[3]])
@@ -142,6 +143,7 @@ def p_exp_bool_or_value(p):
 
 def p_comb(p):
     '''comb : comb AND igualdad
+            | comb AND expr
             | igualdad'''
     if len(p) == 4:
         p[0] = ASTNode('comb', [p[1], ASTNode('operator', leaf=p[2]), p[3]])
@@ -203,6 +205,7 @@ def p_factor(p):
               | IDENTIFIER
               | TRUE
               | FALSE
+              | LPAREN expr RPAREN
               | LPAREN exp_bool RPAREN'''
     if len(p) == 2:
         p[0] = ASTNode('factor', leaf=p[1])

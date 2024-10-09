@@ -7,7 +7,7 @@ tokens = (
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'POWER',
     'LT', 'LE', 'GT', 'GE', 'EQ', 'NE', 'ASSIGN',
     'SEMICOLON', 'COMMA', 'LPAREN', 'RPAREN', 'LBRACE', 'RBRACE',
-    'IDENTIFIER', 'NUMBER', 'TB', 'THEN'
+    'IDENTIFIER', 'NUMBER', 'THEN'
 )
 
 # Expresiones regulares para tokens simples
@@ -29,12 +29,6 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_LBRACE = r'{'
 t_RBRACE = r'}'
-
-# Expresión regular para identificar tabuladores
-def t_TB(t):
-    r'\t'
-    t.value = 'TB'
-    return t
 
 # Regla para comentarios de una sola línea
 def t_COMMENT_SINGLELINE(t):
