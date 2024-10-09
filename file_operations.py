@@ -210,8 +210,6 @@ def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores):
 
             # Propagar las anotaciones a los nodos hijos
             for child in node.children:
-                # Propagar la anotación correspondiente al nodo hijo
-                child.semantic_annotation = annotation  # Asignar la anotación al nodo hijo
                 add_semantic_nodes(tree, child, tree_id)
 
         # Comenzar a agregar nodos desde la raíz del árbol sintáctico
