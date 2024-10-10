@@ -171,18 +171,32 @@ class SemanticAnalyzer:
                 operator = node.children[1].leaf  # El operador, por ejemplo, '*' o '/'
                 right_type, right_value = self.evaluate_expression(node.children[2])
 
+                # Promoción de tipos si uno es float y otro es int
+                if left_type == 'int' and right_type == 'float':
+                    left_value = float(left_value)
+                    left_type = 'float'
+                elif left_type == 'float' and right_type == 'int':
+                    right_value = float(right_value)
+                    right_type = 'float'
+
+                # Verificar si los tipos son compatibles después de la promoción
+                if left_type == 'int' and right_type == 'int':
+                    # Si ambos son int, se puede realizar la operación sin errores
+                    return 'int', eval(f"{left_value} {operator} {right_value}")
+
                 if left_type != right_type:
                     raise SemanticError(f"Error: Operación incompatible entre {left_type} y {right_type}.")
 
+                # Realizar la operación
                 if operator == '*':
                     result_value = left_value * right_value
                 elif operator == '/':
                     if right_value == 0:
                         raise SemanticError("Error: División por cero.")
                     result_value = left_value / right_value
-                
+
                 return left_type, result_value
-            
+
             return left_type, left_value
 
         # Si es un nodo 'expr', representa una suma o resta
@@ -193,16 +207,30 @@ class SemanticAnalyzer:
                 operator = node.children[1].leaf  # El operador, por ejemplo, '+' o '-'
                 right_type, right_value = self.evaluate_expression(node.children[2])
 
+                # Promoción de tipos si uno es float y otro es int
+                if left_type == 'int' and right_type == 'float':
+                    left_value = float(left_value)
+                    left_type = 'float'
+                elif left_type == 'float' and right_type == 'int':
+                    right_value = float(right_value)
+                    right_type = 'float'
+
+                # Verificar si los tipos son compatibles después de la promoción
+                if left_type == 'int' and right_type == 'int':
+                    # Si ambos son int, se puede realizar la operación sin errores
+                    return 'int', eval(f"{left_value} {operator} {right_value}")
+
                 if left_type != right_type:
                     raise SemanticError(f"Error: Operación incompatible entre {left_type} y {right_type}.")
 
+                # Realizar la operación
                 if operator == '+':
                     result_value = left_value + right_value
                 elif operator == '-':
                     result_value = left_value - right_value
-                
+
                 return left_type, result_value
-            
+
             return left_type, left_value
 
         raise SemanticError(f"Error: Nodo inesperado '{node.type}' en la expresión.")
