@@ -61,7 +61,7 @@ def p_list_id(p):
         p[0] = ASTNode('list_id', [ASTNode('identifier', leaf=p[1])])
 
 def p_list_sent(p):
-    '''list_sent : list_sent sent
+    '''list_sent : sent list_sent
                  | sent
                  | empty'''
     if len(p) == 3:

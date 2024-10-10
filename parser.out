@@ -18,7 +18,7 @@ Rule 7     tipo -> FLOAT
 Rule 8     tipo -> BOOL
 Rule 9     list_id -> IDENTIFIER COMMA list_id
 Rule 10    list_id -> IDENTIFIER
-Rule 11    list_sent -> list_sent sent
+Rule 11    list_sent -> sent list_sent
 Rule 12    list_sent -> sent
 Rule 13    list_sent -> empty
 Rule 14    sent -> sent_if
@@ -215,7 +215,7 @@ state 4
 
     (1) program -> PROGRAM LBRACE list_decl . list_sent RBRACE
     (2) list_decl -> list_decl . decl
-    (11) list_sent -> . list_sent sent
+    (11) list_sent -> . sent list_sent
     (12) list_sent -> . sent
     (13) list_sent -> . empty
     (5) decl -> . tipo list_id SEMICOLON
@@ -241,14 +241,6 @@ state 4
     (33) sent_assign -> . IDENTIFIER ASSIGN exp_bool SEMICOLON
     (34) sent_assign -> . IDENTIFIER ASSIGN factor SEMICOLON
 
-  ! shift/reduce conflict for BREAK resolved as shift
-  ! shift/reduce conflict for IF resolved as shift
-  ! shift/reduce conflict for WHILE resolved as shift
-  ! shift/reduce conflict for DO resolved as shift
-  ! shift/reduce conflict for READ resolved as shift
-  ! shift/reduce conflict for WRITE resolved as shift
-  ! shift/reduce conflict for LBRACE resolved as shift
-  ! shift/reduce conflict for IDENTIFIER resolved as shift
     BREAK           shift and go to state 23
     RBRACE          reduce using rule 68 (empty -> .)
     INT             shift and go to state 8
@@ -261,15 +253,6 @@ state 4
     WRITE           shift and go to state 29
     LBRACE          shift and go to state 11
     IDENTIFIER      shift and go to state 28
-
-  ! BREAK           [ reduce using rule 68 (empty -> .) ]
-  ! IF              [ reduce using rule 68 (empty -> .) ]
-  ! WHILE           [ reduce using rule 68 (empty -> .) ]
-  ! DO              [ reduce using rule 68 (empty -> .) ]
-  ! READ            [ reduce using rule 68 (empty -> .) ]
-  ! WRITE           [ reduce using rule 68 (empty -> .) ]
-  ! LBRACE          [ reduce using rule 68 (empty -> .) ]
-  ! IDENTIFIER      [ reduce using rule 68 (empty -> .) ]
 
     list_sent                      shift and go to state 12
     decl                           shift and go to state 13
@@ -354,7 +337,7 @@ state 10
 state 11
 
     (31) bloque -> LBRACE . list_sent RBRACE
-    (11) list_sent -> . list_sent sent
+    (11) list_sent -> . sent list_sent
     (12) list_sent -> . sent
     (13) list_sent -> . empty
     (14) sent -> . sent_if
@@ -376,14 +359,6 @@ state 11
     (33) sent_assign -> . IDENTIFIER ASSIGN exp_bool SEMICOLON
     (34) sent_assign -> . IDENTIFIER ASSIGN factor SEMICOLON
 
-  ! shift/reduce conflict for BREAK resolved as shift
-  ! shift/reduce conflict for IF resolved as shift
-  ! shift/reduce conflict for WHILE resolved as shift
-  ! shift/reduce conflict for DO resolved as shift
-  ! shift/reduce conflict for READ resolved as shift
-  ! shift/reduce conflict for WRITE resolved as shift
-  ! shift/reduce conflict for LBRACE resolved as shift
-  ! shift/reduce conflict for IDENTIFIER resolved as shift
     BREAK           shift and go to state 23
     RBRACE          reduce using rule 68 (empty -> .)
     IF              shift and go to state 24
@@ -393,15 +368,6 @@ state 11
     WRITE           shift and go to state 29
     LBRACE          shift and go to state 11
     IDENTIFIER      shift and go to state 28
-
-  ! BREAK           [ reduce using rule 68 (empty -> .) ]
-  ! IF              [ reduce using rule 68 (empty -> .) ]
-  ! WHILE           [ reduce using rule 68 (empty -> .) ]
-  ! DO              [ reduce using rule 68 (empty -> .) ]
-  ! READ            [ reduce using rule 68 (empty -> .) ]
-  ! WRITE           [ reduce using rule 68 (empty -> .) ]
-  ! LBRACE          [ reduce using rule 68 (empty -> .) ]
-  ! IDENTIFIER      [ reduce using rule 68 (empty -> .) ]
 
     list_sent                      shift and go to state 32
     sent                           shift and go to state 14
@@ -417,43 +383,9 @@ state 11
 state 12
 
     (1) program -> PROGRAM LBRACE list_decl list_sent . RBRACE
-    (11) list_sent -> list_sent . sent
-    (14) sent -> . sent_if
-    (15) sent -> . sent_while
-    (16) sent -> . sent_do
-    (17) sent -> . sent_read
-    (18) sent -> . sent_write
-    (19) sent -> . bloque
-    (20) sent -> . sent_assign
-    (21) sent -> . BREAK
-    (22) sent_if -> . IF LPAREN exp_bool RPAREN THEN bloque else_part FI
-    (25) sent_while -> . WHILE LPAREN exp_bool RPAREN bloque
-    (26) sent_do -> . DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON
-    (27) sent_read -> . READ IDENTIFIER SEMICOLON
-    (28) sent_write -> . WRITE exp_bool_or_value SEMICOLON
-    (31) bloque -> . LBRACE list_sent RBRACE
-    (32) sent_assign -> . IDENTIFIER ASSIGN expr SEMICOLON
-    (33) sent_assign -> . IDENTIFIER ASSIGN exp_bool SEMICOLON
-    (34) sent_assign -> . IDENTIFIER ASSIGN factor SEMICOLON
 
     RBRACE          shift and go to state 33
-    BREAK           shift and go to state 23
-    IF              shift and go to state 24
-    WHILE           shift and go to state 25
-    DO              shift and go to state 26
-    READ            shift and go to state 27
-    WRITE           shift and go to state 29
-    LBRACE          shift and go to state 11
-    IDENTIFIER      shift and go to state 28
 
-    sent                           shift and go to state 34
-    sent_if                        shift and go to state 16
-    sent_while                     shift and go to state 17
-    sent_do                        shift and go to state 18
-    sent_read                      shift and go to state 19
-    sent_write                     shift and go to state 20
-    bloque                         shift and go to state 21
-    sent_assign                    shift and go to state 22
 
 state 13
 
@@ -475,39 +407,65 @@ state 13
 
 state 14
 
+    (11) list_sent -> sent . list_sent
     (12) list_sent -> sent .
+    (11) list_sent -> . sent list_sent
+    (12) list_sent -> . sent
+    (13) list_sent -> . empty
+    (14) sent -> . sent_if
+    (15) sent -> . sent_while
+    (16) sent -> . sent_do
+    (17) sent -> . sent_read
+    (18) sent -> . sent_write
+    (19) sent -> . bloque
+    (20) sent -> . sent_assign
+    (21) sent -> . BREAK
+    (68) empty -> .
+    (22) sent_if -> . IF LPAREN exp_bool RPAREN THEN bloque else_part FI
+    (25) sent_while -> . WHILE LPAREN exp_bool RPAREN bloque
+    (26) sent_do -> . DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON
+    (27) sent_read -> . READ IDENTIFIER SEMICOLON
+    (28) sent_write -> . WRITE exp_bool_or_value SEMICOLON
+    (31) bloque -> . LBRACE list_sent RBRACE
+    (32) sent_assign -> . IDENTIFIER ASSIGN expr SEMICOLON
+    (33) sent_assign -> . IDENTIFIER ASSIGN exp_bool SEMICOLON
+    (34) sent_assign -> . IDENTIFIER ASSIGN factor SEMICOLON
 
+  ! reduce/reduce conflict for RBRACE resolved using rule 12 (list_sent -> sent .)
     RBRACE          reduce using rule 12 (list_sent -> sent .)
-    BREAK           reduce using rule 12 (list_sent -> sent .)
-    IF              reduce using rule 12 (list_sent -> sent .)
-    WHILE           reduce using rule 12 (list_sent -> sent .)
-    DO              reduce using rule 12 (list_sent -> sent .)
-    READ            reduce using rule 12 (list_sent -> sent .)
-    WRITE           reduce using rule 12 (list_sent -> sent .)
-    LBRACE          reduce using rule 12 (list_sent -> sent .)
-    IDENTIFIER      reduce using rule 12 (list_sent -> sent .)
+    BREAK           shift and go to state 23
+    IF              shift and go to state 24
+    WHILE           shift and go to state 25
+    DO              shift and go to state 26
+    READ            shift and go to state 27
+    WRITE           shift and go to state 29
+    LBRACE          shift and go to state 11
+    IDENTIFIER      shift and go to state 28
 
+  ! RBRACE          [ reduce using rule 68 (empty -> .) ]
+
+    sent                           shift and go to state 14
+    list_sent                      shift and go to state 34
+    empty                          shift and go to state 15
+    sent_if                        shift and go to state 16
+    sent_while                     shift and go to state 17
+    sent_do                        shift and go to state 18
+    sent_read                      shift and go to state 19
+    sent_write                     shift and go to state 20
+    bloque                         shift and go to state 21
+    sent_assign                    shift and go to state 22
 
 state 15
 
     (13) list_sent -> empty .
 
     RBRACE          reduce using rule 13 (list_sent -> empty .)
-    BREAK           reduce using rule 13 (list_sent -> empty .)
-    IF              reduce using rule 13 (list_sent -> empty .)
-    WHILE           reduce using rule 13 (list_sent -> empty .)
-    DO              reduce using rule 13 (list_sent -> empty .)
-    READ            reduce using rule 13 (list_sent -> empty .)
-    WRITE           reduce using rule 13 (list_sent -> empty .)
-    LBRACE          reduce using rule 13 (list_sent -> empty .)
-    IDENTIFIER      reduce using rule 13 (list_sent -> empty .)
 
 
 state 16
 
     (14) sent -> sent_if .
 
-    RBRACE          reduce using rule 14 (sent -> sent_if .)
     BREAK           reduce using rule 14 (sent -> sent_if .)
     IF              reduce using rule 14 (sent -> sent_if .)
     WHILE           reduce using rule 14 (sent -> sent_if .)
@@ -516,13 +474,13 @@ state 16
     WRITE           reduce using rule 14 (sent -> sent_if .)
     LBRACE          reduce using rule 14 (sent -> sent_if .)
     IDENTIFIER      reduce using rule 14 (sent -> sent_if .)
+    RBRACE          reduce using rule 14 (sent -> sent_if .)
 
 
 state 17
 
     (15) sent -> sent_while .
 
-    RBRACE          reduce using rule 15 (sent -> sent_while .)
     BREAK           reduce using rule 15 (sent -> sent_while .)
     IF              reduce using rule 15 (sent -> sent_while .)
     WHILE           reduce using rule 15 (sent -> sent_while .)
@@ -531,13 +489,13 @@ state 17
     WRITE           reduce using rule 15 (sent -> sent_while .)
     LBRACE          reduce using rule 15 (sent -> sent_while .)
     IDENTIFIER      reduce using rule 15 (sent -> sent_while .)
+    RBRACE          reduce using rule 15 (sent -> sent_while .)
 
 
 state 18
 
     (16) sent -> sent_do .
 
-    RBRACE          reduce using rule 16 (sent -> sent_do .)
     BREAK           reduce using rule 16 (sent -> sent_do .)
     IF              reduce using rule 16 (sent -> sent_do .)
     WHILE           reduce using rule 16 (sent -> sent_do .)
@@ -546,13 +504,13 @@ state 18
     WRITE           reduce using rule 16 (sent -> sent_do .)
     LBRACE          reduce using rule 16 (sent -> sent_do .)
     IDENTIFIER      reduce using rule 16 (sent -> sent_do .)
+    RBRACE          reduce using rule 16 (sent -> sent_do .)
 
 
 state 19
 
     (17) sent -> sent_read .
 
-    RBRACE          reduce using rule 17 (sent -> sent_read .)
     BREAK           reduce using rule 17 (sent -> sent_read .)
     IF              reduce using rule 17 (sent -> sent_read .)
     WHILE           reduce using rule 17 (sent -> sent_read .)
@@ -561,13 +519,13 @@ state 19
     WRITE           reduce using rule 17 (sent -> sent_read .)
     LBRACE          reduce using rule 17 (sent -> sent_read .)
     IDENTIFIER      reduce using rule 17 (sent -> sent_read .)
+    RBRACE          reduce using rule 17 (sent -> sent_read .)
 
 
 state 20
 
     (18) sent -> sent_write .
 
-    RBRACE          reduce using rule 18 (sent -> sent_write .)
     BREAK           reduce using rule 18 (sent -> sent_write .)
     IF              reduce using rule 18 (sent -> sent_write .)
     WHILE           reduce using rule 18 (sent -> sent_write .)
@@ -576,13 +534,13 @@ state 20
     WRITE           reduce using rule 18 (sent -> sent_write .)
     LBRACE          reduce using rule 18 (sent -> sent_write .)
     IDENTIFIER      reduce using rule 18 (sent -> sent_write .)
+    RBRACE          reduce using rule 18 (sent -> sent_write .)
 
 
 state 21
 
     (19) sent -> bloque .
 
-    RBRACE          reduce using rule 19 (sent -> bloque .)
     BREAK           reduce using rule 19 (sent -> bloque .)
     IF              reduce using rule 19 (sent -> bloque .)
     WHILE           reduce using rule 19 (sent -> bloque .)
@@ -591,13 +549,13 @@ state 21
     WRITE           reduce using rule 19 (sent -> bloque .)
     LBRACE          reduce using rule 19 (sent -> bloque .)
     IDENTIFIER      reduce using rule 19 (sent -> bloque .)
+    RBRACE          reduce using rule 19 (sent -> bloque .)
 
 
 state 22
 
     (20) sent -> sent_assign .
 
-    RBRACE          reduce using rule 20 (sent -> sent_assign .)
     BREAK           reduce using rule 20 (sent -> sent_assign .)
     IF              reduce using rule 20 (sent -> sent_assign .)
     WHILE           reduce using rule 20 (sent -> sent_assign .)
@@ -606,13 +564,13 @@ state 22
     WRITE           reduce using rule 20 (sent -> sent_assign .)
     LBRACE          reduce using rule 20 (sent -> sent_assign .)
     IDENTIFIER      reduce using rule 20 (sent -> sent_assign .)
+    RBRACE          reduce using rule 20 (sent -> sent_assign .)
 
 
 state 23
 
     (21) sent -> BREAK .
 
-    RBRACE          reduce using rule 21 (sent -> BREAK .)
     BREAK           reduce using rule 21 (sent -> BREAK .)
     IF              reduce using rule 21 (sent -> BREAK .)
     WHILE           reduce using rule 21 (sent -> BREAK .)
@@ -621,6 +579,7 @@ state 23
     WRITE           reduce using rule 21 (sent -> BREAK .)
     LBRACE          reduce using rule 21 (sent -> BREAK .)
     IDENTIFIER      reduce using rule 21 (sent -> BREAK .)
+    RBRACE          reduce using rule 21 (sent -> BREAK .)
 
 
 state 24
@@ -733,43 +692,9 @@ state 31
 state 32
 
     (31) bloque -> LBRACE list_sent . RBRACE
-    (11) list_sent -> list_sent . sent
-    (14) sent -> . sent_if
-    (15) sent -> . sent_while
-    (16) sent -> . sent_do
-    (17) sent -> . sent_read
-    (18) sent -> . sent_write
-    (19) sent -> . bloque
-    (20) sent -> . sent_assign
-    (21) sent -> . BREAK
-    (22) sent_if -> . IF LPAREN exp_bool RPAREN THEN bloque else_part FI
-    (25) sent_while -> . WHILE LPAREN exp_bool RPAREN bloque
-    (26) sent_do -> . DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON
-    (27) sent_read -> . READ IDENTIFIER SEMICOLON
-    (28) sent_write -> . WRITE exp_bool_or_value SEMICOLON
-    (31) bloque -> . LBRACE list_sent RBRACE
-    (32) sent_assign -> . IDENTIFIER ASSIGN expr SEMICOLON
-    (33) sent_assign -> . IDENTIFIER ASSIGN exp_bool SEMICOLON
-    (34) sent_assign -> . IDENTIFIER ASSIGN factor SEMICOLON
 
     RBRACE          shift and go to state 59
-    BREAK           shift and go to state 23
-    IF              shift and go to state 24
-    WHILE           shift and go to state 25
-    DO              shift and go to state 26
-    READ            shift and go to state 27
-    WRITE           shift and go to state 29
-    LBRACE          shift and go to state 11
-    IDENTIFIER      shift and go to state 28
 
-    sent                           shift and go to state 34
-    sent_if                        shift and go to state 16
-    sent_while                     shift and go to state 17
-    sent_do                        shift and go to state 18
-    sent_read                      shift and go to state 19
-    sent_write                     shift and go to state 20
-    bloque                         shift and go to state 21
-    sent_assign                    shift and go to state 22
 
 state 33
 
@@ -780,17 +705,9 @@ state 33
 
 state 34
 
-    (11) list_sent -> list_sent sent .
+    (11) list_sent -> sent list_sent .
 
-    RBRACE          reduce using rule 11 (list_sent -> list_sent sent .)
-    BREAK           reduce using rule 11 (list_sent -> list_sent sent .)
-    IF              reduce using rule 11 (list_sent -> list_sent sent .)
-    WHILE           reduce using rule 11 (list_sent -> list_sent sent .)
-    DO              reduce using rule 11 (list_sent -> list_sent sent .)
-    READ            reduce using rule 11 (list_sent -> list_sent sent .)
-    WRITE           reduce using rule 11 (list_sent -> list_sent sent .)
-    LBRACE          reduce using rule 11 (list_sent -> list_sent sent .)
-    IDENTIFIER      reduce using rule 11 (list_sent -> list_sent sent .)
+    RBRACE          reduce using rule 11 (list_sent -> sent list_sent .)
 
 
 state 35
@@ -1297,7 +1214,6 @@ state 59
 
     (31) bloque -> LBRACE list_sent RBRACE .
 
-    RBRACE          reduce using rule 31 (bloque -> LBRACE list_sent RBRACE .)
     BREAK           reduce using rule 31 (bloque -> LBRACE list_sent RBRACE .)
     IF              reduce using rule 31 (bloque -> LBRACE list_sent RBRACE .)
     WHILE           reduce using rule 31 (bloque -> LBRACE list_sent RBRACE .)
@@ -1306,6 +1222,7 @@ state 59
     WRITE           reduce using rule 31 (bloque -> LBRACE list_sent RBRACE .)
     LBRACE          reduce using rule 31 (bloque -> LBRACE list_sent RBRACE .)
     IDENTIFIER      reduce using rule 31 (bloque -> LBRACE list_sent RBRACE .)
+    RBRACE          reduce using rule 31 (bloque -> LBRACE list_sent RBRACE .)
     UNTIL           reduce using rule 31 (bloque -> LBRACE list_sent RBRACE .)
     ELSE            reduce using rule 31 (bloque -> LBRACE list_sent RBRACE .)
     FI              reduce using rule 31 (bloque -> LBRACE list_sent RBRACE .)
@@ -1382,7 +1299,6 @@ state 65
 
     (27) sent_read -> READ IDENTIFIER SEMICOLON .
 
-    RBRACE          reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
     BREAK           reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
     IF              reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
     WHILE           reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
@@ -1391,6 +1307,7 @@ state 65
     WRITE           reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
     LBRACE          reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
     IDENTIFIER      reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
+    RBRACE          reduce using rule 27 (sent_read -> READ IDENTIFIER SEMICOLON .)
 
 
 state 66
@@ -1453,7 +1370,6 @@ state 69
 
     (28) sent_write -> WRITE exp_bool_or_value SEMICOLON .
 
-    RBRACE          reduce using rule 28 (sent_write -> WRITE exp_bool_or_value SEMICOLON .)
     BREAK           reduce using rule 28 (sent_write -> WRITE exp_bool_or_value SEMICOLON .)
     IF              reduce using rule 28 (sent_write -> WRITE exp_bool_or_value SEMICOLON .)
     WHILE           reduce using rule 28 (sent_write -> WRITE exp_bool_or_value SEMICOLON .)
@@ -1462,6 +1378,7 @@ state 69
     WRITE           reduce using rule 28 (sent_write -> WRITE exp_bool_or_value SEMICOLON .)
     LBRACE          reduce using rule 28 (sent_write -> WRITE exp_bool_or_value SEMICOLON .)
     IDENTIFIER      reduce using rule 28 (sent_write -> WRITE exp_bool_or_value SEMICOLON .)
+    RBRACE          reduce using rule 28 (sent_write -> WRITE exp_bool_or_value SEMICOLON .)
 
 
 state 70
@@ -1976,7 +1893,6 @@ state 93
 
     (32) sent_assign -> IDENTIFIER ASSIGN expr SEMICOLON .
 
-    RBRACE          reduce using rule 32 (sent_assign -> IDENTIFIER ASSIGN expr SEMICOLON .)
     BREAK           reduce using rule 32 (sent_assign -> IDENTIFIER ASSIGN expr SEMICOLON .)
     IF              reduce using rule 32 (sent_assign -> IDENTIFIER ASSIGN expr SEMICOLON .)
     WHILE           reduce using rule 32 (sent_assign -> IDENTIFIER ASSIGN expr SEMICOLON .)
@@ -1985,13 +1901,13 @@ state 93
     WRITE           reduce using rule 32 (sent_assign -> IDENTIFIER ASSIGN expr SEMICOLON .)
     LBRACE          reduce using rule 32 (sent_assign -> IDENTIFIER ASSIGN expr SEMICOLON .)
     IDENTIFIER      reduce using rule 32 (sent_assign -> IDENTIFIER ASSIGN expr SEMICOLON .)
+    RBRACE          reduce using rule 32 (sent_assign -> IDENTIFIER ASSIGN expr SEMICOLON .)
 
 
 state 94
 
     (33) sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .
 
-    RBRACE          reduce using rule 33 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
     BREAK           reduce using rule 33 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
     IF              reduce using rule 33 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
     WHILE           reduce using rule 33 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
@@ -2000,13 +1916,13 @@ state 94
     WRITE           reduce using rule 33 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
     LBRACE          reduce using rule 33 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
     IDENTIFIER      reduce using rule 33 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
+    RBRACE          reduce using rule 33 (sent_assign -> IDENTIFIER ASSIGN exp_bool SEMICOLON .)
 
 
 state 95
 
     (34) sent_assign -> IDENTIFIER ASSIGN factor SEMICOLON .
 
-    RBRACE          reduce using rule 34 (sent_assign -> IDENTIFIER ASSIGN factor SEMICOLON .)
     BREAK           reduce using rule 34 (sent_assign -> IDENTIFIER ASSIGN factor SEMICOLON .)
     IF              reduce using rule 34 (sent_assign -> IDENTIFIER ASSIGN factor SEMICOLON .)
     WHILE           reduce using rule 34 (sent_assign -> IDENTIFIER ASSIGN factor SEMICOLON .)
@@ -2015,6 +1931,7 @@ state 95
     WRITE           reduce using rule 34 (sent_assign -> IDENTIFIER ASSIGN factor SEMICOLON .)
     LBRACE          reduce using rule 34 (sent_assign -> IDENTIFIER ASSIGN factor SEMICOLON .)
     IDENTIFIER      reduce using rule 34 (sent_assign -> IDENTIFIER ASSIGN factor SEMICOLON .)
+    RBRACE          reduce using rule 34 (sent_assign -> IDENTIFIER ASSIGN factor SEMICOLON .)
 
 
 state 96
@@ -2275,7 +2192,6 @@ state 110
 
     (25) sent_while -> WHILE LPAREN exp_bool RPAREN bloque .
 
-    RBRACE          reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
     BREAK           reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
     IF              reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
     WHILE           reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
@@ -2284,6 +2200,7 @@ state 110
     WRITE           reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
     LBRACE          reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
     IDENTIFIER      reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
+    RBRACE          reduce using rule 25 (sent_while -> WHILE LPAREN exp_bool RPAREN bloque .)
 
 
 state 111
@@ -2343,7 +2260,6 @@ state 117
 
     (26) sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .
 
-    RBRACE          reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
     BREAK           reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
     IF              reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
     WHILE           reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
@@ -2352,13 +2268,13 @@ state 117
     WRITE           reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
     LBRACE          reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
     IDENTIFIER      reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
+    RBRACE          reduce using rule 26 (sent_do -> DO bloque UNTIL LPAREN exp_bool RPAREN SEMICOLON .)
 
 
 state 118
 
     (22) sent_if -> IF LPAREN exp_bool RPAREN THEN bloque else_part FI .
 
-    RBRACE          reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN THEN bloque else_part FI .)
     BREAK           reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN THEN bloque else_part FI .)
     IF              reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN THEN bloque else_part FI .)
     WHILE           reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN THEN bloque else_part FI .)
@@ -2367,6 +2283,7 @@ state 118
     WRITE           reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN THEN bloque else_part FI .)
     LBRACE          reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN THEN bloque else_part FI .)
     IDENTIFIER      reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN THEN bloque else_part FI .)
+    RBRACE          reduce using rule 22 (sent_if -> IF LPAREN exp_bool RPAREN THEN bloque else_part FI .)
 
 
 state 119
@@ -2381,20 +2298,6 @@ WARNING:
 WARNING: shift/reduce conflict for INT in state 3 resolved as shift
 WARNING: shift/reduce conflict for FLOAT in state 3 resolved as shift
 WARNING: shift/reduce conflict for BOOL in state 3 resolved as shift
-WARNING: shift/reduce conflict for BREAK in state 4 resolved as shift
-WARNING: shift/reduce conflict for IF in state 4 resolved as shift
-WARNING: shift/reduce conflict for WHILE in state 4 resolved as shift
-WARNING: shift/reduce conflict for DO in state 4 resolved as shift
-WARNING: shift/reduce conflict for READ in state 4 resolved as shift
-WARNING: shift/reduce conflict for WRITE in state 4 resolved as shift
-WARNING: shift/reduce conflict for LBRACE in state 4 resolved as shift
-WARNING: shift/reduce conflict for IDENTIFIER in state 4 resolved as shift
-WARNING: shift/reduce conflict for BREAK in state 11 resolved as shift
-WARNING: shift/reduce conflict for IF in state 11 resolved as shift
-WARNING: shift/reduce conflict for WHILE in state 11 resolved as shift
-WARNING: shift/reduce conflict for DO in state 11 resolved as shift
-WARNING: shift/reduce conflict for READ in state 11 resolved as shift
-WARNING: shift/reduce conflict for WRITE in state 11 resolved as shift
-WARNING: shift/reduce conflict for LBRACE in state 11 resolved as shift
-WARNING: shift/reduce conflict for IDENTIFIER in state 11 resolved as shift
 WARNING: shift/reduce conflict for SEMICOLON in state 68 resolved as shift
+WARNING: reduce/reduce conflict in state 14 resolved using rule (list_sent -> sent)
+WARNING: rejected rule (empty -> <empty>) in state 14
