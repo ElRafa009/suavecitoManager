@@ -196,9 +196,10 @@ def p_unario(p):
               | MINUS unario
               | factor'''
     if len(p) == 3:
-        p[0] = ASTNode('unario', [ASTNode('operator', leaf=p[1]), p[2]])
+        p[0] = ASTNode('unario', [ASTNode('operator', leaf=p[1]), p[2]])  # Unario con operador
     else:
-        p[0] = ASTNode('unario', [p[1]])
+        p[0] = p[1]  # Devuelve directamente el nodo 'factor', no lo encapsules en un 'unario'
+
 
 def p_factor(p):
     '''factor : NUMBER

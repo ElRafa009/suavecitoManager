@@ -124,6 +124,7 @@ class SemanticAnalyzer:
 
 
     def evaluate_expression(self, node):
+        # Si el nodo es un factor (número, variable, booleano)
         if node.type == 'factor':
             if isinstance(node.leaf, int) or isinstance(node.leaf, float):
                 tipo = 'float' if isinstance(node.leaf, float) else 'int'
@@ -132,7 +133,6 @@ class SemanticAnalyzer:
                 if node.leaf.isdigit():
                     return 'int', int(node.leaf)
                 else:
-                    # Comprobar si es un identificador y si está declarado
                     if node.leaf in self.symbol_table:
                         tipo = self.symbol_table[node.leaf]['type']
                         valor = self.symbol_table[node.leaf].get('value', None)
@@ -141,13 +141,72 @@ class SemanticAnalyzer:
                         raise SemanticError(f"Error: La variable '{node.leaf}' no está declarada.")
             elif node.leaf in ['TRUE', 'FALSE']:
                 return 'bool', (True if node.leaf == 'TRUE' else False)
-        # Si es otro tipo de nodo, continúa evaluando
-        elif node.type == 'expr' or node.type == 'exp_bool':
-            # Evaluar expresión o expresión booleana
-            return self.evaluate_expression(node.children[0])
 
-        # Error si el tipo de nodo no es esperado
+        # Si es un nodo 'unario', representa una operación como la negación (-x)
+        elif node.type == 'unario':
+            if len(node.children) < 2:  # Comprobar que hay al menos dos hijos (operador y operando)
+                raise SemanticError(f"Error: Nodo 'unario' incompleto.")
+            operator = node.children[0].leaf  # El operador unario, por ejemplo, '-'
+            operand_type, operand_value = self.evaluate_expression(node.children[1])
+
+            # Aplicar la operación unaria
+            if operator == '-':
+                if operand_type == 'int' or operand_type == 'float':
+                    return operand_type, -operand_value
+                else:
+                    raise SemanticError(f"Error: Operación unaria '{operator}' no aplicable a tipo {operand_type}.")
+            elif operator == '!':
+                if operand_type == 'bool':
+                    return 'bool', not operand_value
+                else:
+                    raise SemanticError(f"Error: Operación unaria '{operator}' no aplicable a tipo {operand_type}.")
+            else:
+                raise SemanticError(f"Error: Operador unario inesperado '{operator}'.")
+
+        # Si es un nodo 'term', representa una multiplicación o división
+        elif node.type == 'term':
+            left_type, left_value = self.evaluate_expression(node.children[0])
+            
+            if len(node.children) > 1:  # Si hay más de un hijo, tenemos una operación binaria
+                operator = node.children[1].leaf  # El operador, por ejemplo, '*' o '/'
+                right_type, right_value = self.evaluate_expression(node.children[2])
+
+                if left_type != right_type:
+                    raise SemanticError(f"Error: Operación incompatible entre {left_type} y {right_type}.")
+
+                if operator == '*':
+                    result_value = left_value * right_value
+                elif operator == '/':
+                    if right_value == 0:
+                        raise SemanticError("Error: División por cero.")
+                    result_value = left_value / right_value
+                
+                return left_type, result_value
+            
+            return left_type, left_value
+
+        # Si es un nodo 'expr', representa una suma o resta
+        elif node.type == 'expr':
+            left_type, left_value = self.evaluate_expression(node.children[0])
+            
+            if len(node.children) > 1:  # Si hay más de un hijo, tenemos una operación binaria
+                operator = node.children[1].leaf  # El operador, por ejemplo, '+' o '-'
+                right_type, right_value = self.evaluate_expression(node.children[2])
+
+                if left_type != right_type:
+                    raise SemanticError(f"Error: Operación incompatible entre {left_type} y {right_type}.")
+
+                if operator == '+':
+                    result_value = left_value + right_value
+                elif operator == '-':
+                    result_value = left_value - right_value
+                
+                return left_type, result_value
+            
+            return left_type, left_value
+
         raise SemanticError(f"Error: Nodo inesperado '{node.type}' en la expresión.")
+
 
 
     def analyze_if(self, node):
