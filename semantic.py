@@ -126,115 +126,99 @@ class SemanticAnalyzer:
     def evaluate_expression(self, node):
         # Si el nodo es un factor (número, variable, booleano)
         if node.type == 'factor':
-            if isinstance(node.leaf, int) or isinstance(node.leaf, float):
+            if len(node.children) == 1:  # Caso de paréntesis o subexpresión
+                return self.evaluate_expression(node.children[0])
+            elif isinstance(node.leaf, (int, float)):
                 tipo = 'float' if isinstance(node.leaf, float) else 'int'
+                node.semantic_annotation = f"{node.leaf} ({tipo})"
                 return tipo, node.leaf  # Devolver tipo y valor
             elif isinstance(node.leaf, str):
                 if node.leaf.isdigit():
+                    node.semantic_annotation = f"{int(node.leaf)} (int)"
                     return 'int', int(node.leaf)
                 else:
                     if node.leaf in self.symbol_table:
                         tipo = self.symbol_table[node.leaf]['type']
                         valor = self.symbol_table[node.leaf].get('value', None)
+                        node.semantic_annotation = f"{node.leaf} = {valor} ({tipo})"
                         return tipo, valor  # Devolver tipo y valor del identificador
                     else:
-                        raise SemanticError(f"Error: La variable '{node.leaf}' no está declarada.")
+                        raise SemanticError(f"Variable '{node.leaf}' no declarada.")
             elif node.leaf in ['TRUE', 'FALSE']:
-                return 'bool', (True if node.leaf == 'TRUE' else False)
+                bool_value = True if node.leaf == 'TRUE' else False
+                node.semantic_annotation = f"{node.leaf} (bool)"
+                return 'bool', bool_value
 
         # Si es un nodo 'unario', representa una operación como la negación (-x)
         elif node.type == 'unario':
-            if len(node.children) < 2:  # Comprobar que hay al menos dos hijos (operador y operando)
-                raise SemanticError(f"Error: Nodo 'unario' incompleto.")
-            operator = node.children[0].leaf  # El operador unario, por ejemplo, '-'
-            operand_type, operand_value = self.evaluate_expression(node.children[1])
+            operator = node.children[0].leaf  # Obtener el operador unario
+            operand_type, operand_value = self.evaluate_expression(node.children[1])  # Evaluar el operando
 
-            # Aplicar la operación unaria
             if operator == '-':
-                if operand_type == 'int' or operand_type == 'float':
-                    return operand_type, -operand_value
-                else:
-                    raise SemanticError(f"Error: Operación unaria '{operator}' no aplicable a tipo {operand_type}.")
+                result = -operand_value  # Realizar la operación de negación
+                node.semantic_annotation = f"{operator}{operand_value} = {result}"
+                return operand_type, result
             elif operator == '!':
-                if operand_type == 'bool':
-                    return 'bool', not operand_value
-                else:
-                    raise SemanticError(f"Error: Operación unaria '{operator}' no aplicable a tipo {operand_type}.")
-            else:
-                raise SemanticError(f"Error: Operador unario inesperado '{operator}'.")
+                result = not operand_value  # Realizar la operación lógica NOT
+                node.semantic_annotation = f"!{operand_value} = {result}"
+                return 'bool', result
 
         # Si es un nodo 'term', representa una multiplicación o división
         elif node.type == 'term':
-            left_type, left_value = self.evaluate_expression(node.children[0])
-            
-            if len(node.children) > 1:  # Si hay más de un hijo, tenemos una operación binaria
+            left_type, left_value = self.evaluate_expression(node.children[0])  # Evaluar el operando izquierdo
+            node.semantic_annotation = f"{left_value} ({left_type})"
+
+            if len(node.children) > 1:
                 operator = node.children[1].leaf  # El operador, por ejemplo, '*' o '/'
-                right_type, right_value = self.evaluate_expression(node.children[2])
+                right_type, right_value = self.evaluate_expression(node.children[2])  # Evaluar el operando derecho
 
-                # Promoción de tipos si uno es float y otro es int
-                if left_type == 'int' and right_type == 'float':
-                    left_value = float(left_value)
-                    left_type = 'float'
-                elif left_type == 'float' and right_type == 'int':
-                    right_value = float(right_value)
-                    right_type = 'float'
-
-                # Verificar si los tipos son compatibles después de la promoción
-                if left_type == 'int' and right_type == 'int':
-                    # Si ambos son int, se puede realizar la operación sin errores
-                    return 'int', eval(f"{left_value} {operator} {right_value}")
-
-                if left_type != right_type:
-                    raise SemanticError(f"Error: Operación incompatible entre {left_type} y {right_type}.")
-
-                # Realizar la operación
+                # Realizar la operación sin promoción de tipos inicialmente
                 if operator == '*':
                     result_value = left_value * right_value
                 elif operator == '/':
                     if right_value == 0:
-                        raise SemanticError("Error: División por cero.")
-                    result_value = left_value / right_value
+                        raise SemanticError("División por cero.")
+                    result_value = left_value // right_value if left_type == 'int' and right_type == 'int' else left_value / right_value
 
-                return left_type, result_value
+                # Promoción de tipos si uno es float
+                if left_type == 'float' or right_type == 'float':
+                    result_value = float(result_value)
+
+                node.semantic_annotation = f"{left_value} {operator} {right_value} = {result_value}"
+                return 'float' if left_type == 'float' or right_type == 'float' else 'int', result_value
 
             return left_type, left_value
 
         # Si es un nodo 'expr', representa una suma o resta
         elif node.type == 'expr':
-            left_type, left_value = self.evaluate_expression(node.children[0])
-            
+            left_type, left_value = self.evaluate_expression(node.children[0])  # Evaluar el operando izquierdo
+            node.semantic_annotation = f"{left_value} ({left_type})"
+
             if len(node.children) > 1:  # Si hay más de un hijo, tenemos una operación binaria
                 operator = node.children[1].leaf  # El operador, por ejemplo, '+' o '-'
-                right_type, right_value = self.evaluate_expression(node.children[2])
+                right_type, right_value = self.evaluate_expression(node.children[2])  # Evaluar el operando derecho
 
-                # Promoción de tipos si uno es float y otro es int
-                if left_type == 'int' and right_type == 'float':
-                    left_value = float(left_value)
-                    left_type = 'float'
-                elif left_type == 'float' and right_type == 'int':
-                    right_value = float(right_value)
-                    right_type = 'float'
-
-                # Verificar si los tipos son compatibles después de la promoción
-                if left_type == 'int' and right_type == 'int':
-                    # Si ambos son int, se puede realizar la operación sin errores
-                    return 'int', eval(f"{left_value} {operator} {right_value}")
-
-                if left_type != right_type:
-                    raise SemanticError(f"Error: Operación incompatible entre {left_type} y {right_type}.")
-
-                # Realizar la operación
+                # Realizar la operación sin promoción de tipos inicialmente
                 if operator == '+':
                     result_value = left_value + right_value
                 elif operator == '-':
                     result_value = left_value - right_value
 
-                return left_type, result_value
+                # Promoción de tipos si uno es float
+                if left_type == 'float' or right_type == 'float':
+                    result_value = float(result_value)
+
+                node.semantic_annotation = f"{left_value} {operator} {right_value}"
+
+                # Agregar el resultado parcial al proceso
+                node.semantic_annotation += f" = {result_value}"
+                node.children[0].semantic_annotation += f" {operator} {right_value} ({right_type}) = {result_value}"
+
+                return 'float' if left_type == 'float' or right_type == 'float' else 'int', result_value
 
             return left_type, left_value
 
-        raise SemanticError(f"Error: Nodo inesperado '{node.type}' en la expresión.")
-
+        raise SemanticError(f"Error inesperado en la expresión '{node.type}'.")
 
 
     def analyze_if(self, node):

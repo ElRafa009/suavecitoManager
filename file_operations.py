@@ -231,6 +231,7 @@ def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores):
             mostrar_mensaje_en_rojo(pantalla_errores, error)
         pantalla_errores.config(state='disabled')
 
+
 def tokens_to_text(tokens):
     """
     Convierte una lista de tokens en texto plano.
