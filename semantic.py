@@ -189,14 +189,20 @@ class SemanticAnalyzer:
 
             return left_type, left_value
 
-        # Si es un nodo 'expr', representa una suma o resta
+       # Si es un nodo 'expr', representa una suma o resta
+       
         elif node.type == 'expr':
             left_type, left_value = self.evaluate_expression(node.children[0])  # Evaluar el operando izquierdo
+            if left_value is None:
+                raise SemanticError("Error: Operando izquierdo en operación 'expr' no puede ser None.")
             node.semantic_annotation = f"{left_value} ({left_type})"
 
             if len(node.children) > 1:  # Si hay más de un hijo, tenemos una operación binaria
                 operator = node.children[1].leaf  # El operador, por ejemplo, '+' o '-'
                 right_type, right_value = self.evaluate_expression(node.children[2])  # Evaluar el operando derecho
+
+                if right_value is None:
+                    raise SemanticError("Error: Operando derecho en operación 'expr' no puede ser None.")
 
                 # Realizar la operación sin promoción de tipos inicialmente
                 if operator == '+':
@@ -218,33 +224,224 @@ class SemanticAnalyzer:
 
             return left_type, left_value
 
+
+
+        # Si es un nodo 'exp_bool', representa una expresión booleana
+        elif node.type == 'exp_bool':
+            left_type, left_value = self.evaluate_expression(node.children[0])  # Evaluar el operando izquierdo
+            node.semantic_annotation = f"{left_value} ({left_type})"
+
+            if len(node.children) > 1:  # Si hay más de un hijo, tenemos una operación booleana
+                operator = node.children[1].leaf  # El operador, por ejemplo, '>' o '=='
+                right_type, right_value = self.evaluate_expression(node.children[2])  # Evaluar el operando derecho
+
+                # Comprobar que los tipos son compatibles para la comparación
+                if left_type != right_type:
+                    raise SemanticError(f"Error: No se puede comparar {left_type} con {right_type}")
+
+                # Realizar la operación booleana
+                
+                if operator == '==':
+                    result_value = left_value == right_value
+                elif operator == '!=':
+                    result_value = left_value != right_value
+                elif operator == '>':
+                    result_value = left_value > right_value
+                elif operator == '<':
+                    result_value = left_value < right_value
+                elif operator == '>=':
+                    result_value = left_value >= right_value
+                elif operator == '<=':
+                    result_value = left_value <= right_value
+                elif operator == '==':
+                    result_value = left_value == right_value
+                else:
+                    raise SemanticError(f"Error: Operador desconocido '{operator}'")
+
+                node.semantic_annotation = f"{left_value} {operator} {right_value} = {result_value}"
+                return 'bool', result_value
+
+            return 'bool', left_value
+        
+        # Si es un nodo 'comb', representa una combinación lógica (AND, OR)
+        elif node.type == 'comb':
+            left_type, left_value = self.evaluate_expression(node.children[0])  # Evaluar el operando izquierdo
+            node.semantic_annotation = f"{left_value} ({left_type})"
+
+            if len(node.children) > 1:  # Si hay más de un hijo, tenemos una operación de combinación lógica
+                operator = node.children[1].leaf  # El operador, por ejemplo, 'and' o 'or'
+                right_type, right_value = self.evaluate_expression(node.children[2])  # Evaluar el operando derecho
+
+                # Comprobar que ambos operandos son booleanos
+                if left_type != 'bool' or right_type != 'bool':
+                    raise SemanticError(f"Error: Operaciones lógicas solo se pueden realizar entre booleanos, pero se encontró {left_type} y {right_type}")
+
+                # Realizar la operación lógica
+                if operator == 'and':
+                    result_value = left_value and right_value
+                elif operator == 'or':
+                    result_value = left_value or right_value
+
+                node.semantic_annotation = f"{left_value} {operator} {right_value} = {result_value}"
+                return 'bool', result_value
+
+            return 'bool', left_value
+        
+        # Si es un nodo 'igualdad', representa una operación de igualdad (==, !=)
+        elif node.type == 'igualdad':
+            left_type, left_value = self.evaluate_expression(node.children[0])  # Evaluar el operando izquierdo
+            if left_value is None:
+                raise SemanticError("Error: Operando izquierdo en operación 'igualdad' no puede ser None.")
+            node.semantic_annotation = f"{left_value} ({left_type})"
+
+            if len(node.children) > 1:  # Si hay más de un hijo, tenemos una operación de igualdad
+                operator = node.children[1].leaf  # El operador, por ejemplo, '==' o '!='
+                right_type, right_value = self.evaluate_expression(node.children[2])  # Evaluar el operando derecho
+                if right_value is None:
+                    raise SemanticError("Error: Operando derecho en operación 'igualdad' no puede ser None.")
+
+                # Comprobar que los tipos son compatibles para la comparación
+                if left_type != right_type:
+                    raise SemanticError(f"Error: No se puede comparar {left_type} con {right_type}")
+
+                # Realizar la operación de igualdad
+                
+                if operator == '==':
+                    result_value = left_value == right_value
+                elif operator == '!=':
+                    result_value = left_value != right_value
+                elif operator == '==':
+                    result_value = left_value == right_value
+                else:
+                    raise SemanticError(f"Error: Operador desconocido '{operator}'")
+
+                node.semantic_annotation = f"{left_value} {operator} {right_value} = {result_value}"
+                return 'bool', result_value
+
+            return 'bool', left_value
+
+
+        # Si es un nodo 'rel', representa una operación relacional (>, <, >=, <=)
+        elif node.type == 'rel':
+            left_type, left_value = self.evaluate_expression(node.children[0])  # Evaluar el operando izquierdo
+            if left_value is None:
+                raise SemanticError("Error: Operando izquierdo en operación 'rel' no puede ser None.")
+            node.semantic_annotation = f"{left_value} ({left_type})"
+
+            if len(node.children) > 1:  # Si hay más de un hijo, tenemos una operación relacional
+                operator = node.children[1].leaf  # El operador, por ejemplo, '>' o '<'
+                right_type, right_value = self.evaluate_expression(node.children[2])  # Evaluar el operando derecho
+                if right_value is None:
+                    raise SemanticError("Error: Operando derecho en operación 'rel' no puede ser None.")
+
+                # Comprobar que los tipos son compatibles para la comparación
+                if left_type != right_type:
+                    raise SemanticError(f"Error: No se puede comparar {left_type} con {right_type}")
+
+                # Realizar la operación relacional
+                
+                if operator == '>':
+                    result_value = left_value > right_value
+                elif operator == '<':
+                    result_value = left_value < right_value
+                elif operator == '>=':
+                    result_value = left_value >= right_value
+                elif operator == '<=':
+                    result_value = left_value <= right_value
+                elif operator == '==':
+                    result_value = left_value == right_value
+                else:
+                    raise SemanticError(f"Error: Operador desconocido '{operator}'")
+
+                node.semantic_annotation = f"{left_value} {operator} {right_value} = {result_value}"
+                return 'bool', result_value
+
+            return 'bool', left_value
+
+
         raise SemanticError(f"Error inesperado en la expresión '{node.type}'.")
 
 
     def analyze_if(self, node):
-        condition = node.children[0]  # Supongamos que la condición es el primer hijo
-        self.analyze_condition(condition)  # Analizar la condición
+        condition = node.children[0]
+        cond_type, cond_value = self.analyze_condition(condition)  # Obtener el tipo y el valor de la condición
+        print(f"Condición: {cond_value} ({cond_type})")  # Depuración
 
-        for child in node.children[1:]:  # Analizar el cuerpo del if
-            self.analyze(child)
+        if cond_type != 'bool':
+            raise SemanticError(f"Error: Se esperaba un tipo booleano en la condición, pero se encontró '{cond_type}'.")
+
+        if cond_value:  # Usar el valor evaluado de la condición
+            if_true_block = node.children[1]
+            self.analyze(if_true_block)
+        else:
+            if len(node.children) > 2:
+                if_false_block = node.children[2]
+                print("Analizando else_part...")  # Depuración
+                if if_false_block.type == 'else_part':
+                    if if_false_block.children:  # Verifica que else_part no esté vacío
+                        self.analyze(if_false_block.children[0])
+                    else:
+                        print("Else_part está vacío, no hay nada que analizar.")
+                else:
+                    print(f"Tipo de nodo desconocido: {if_false_block.type}")
+
+
 
     def analyze_while(self, node):
         condition = node.children[0]
-        self.analyze_condition(condition)  # Analizar la condición
+        cond_type, cond_value = self.analyze_condition(condition)  # Obtener el tipo y el valor de la condición
+        print(f"Condición del while: {cond_value} ({cond_type})")  # Depuración
 
-        for child in node.children[1:]:  # Analizar el cuerpo del while
-            self.analyze(child)
+        if cond_type != 'bool':
+            raise SemanticError(f"Error: Se esperaba un tipo booleano en la condición, pero se encontró '{cond_type}'.")
+
+        while cond_value:  # Reevaluar la condición en cada iteración del bucle
+            while_body = node.children[1]  # El cuerpo del while
+            for child in while_body.children:
+                self.analyze(child)
+            cond_type, cond_value = self.analyze_condition(condition)  # Reevaluar la condición en cada iteración
 
     def analyze_do_while(self, node):
-        for child in node.children[:-1]:  # Analizar el cuerpo del do
-            self.analyze(child)
-        
-        condition = node.children[-1]
-        self.analyze_condition(condition)  # Analizar la condición
+        do_body = node.children[0]  # El cuerpo del do-while
+        condition = node.children[1]  # La condición es el último hijo
+
+        while True:
+            for stmt in do_body.children:
+                self.analyze(stmt)
+            cond_type, cond_value = self.analyze_condition(condition)  # Obtener el tipo y el valor de la condición
+            print(f"Condición del until: {cond_value} ({cond_type})")  # Depuración
+
+            if cond_type != 'bool':
+                raise SemanticError(f"Error: Se esperaba un tipo booleano en la condición, pero se encontró '{cond_type}'.")
+
+            if cond_value:
+                break
+
+
+
+    def analyze_read(self, node):
+        variable_name = node.children[0].leaf
+        value = input(f"Introduzca un valor para {variable_name}: ")
+        # Aquí deberías manejar la conversión de `value` al tipo adecuado (int, float, etc.)
+        # y almacenarlo en la variable correspondiente en tu contexto de ejecución.
+        self.set_variable_value(variable_name, value)  # Asumiendo que tienes una función para establecer el valor de la variable
+
+    def analyze_write(self, node):
+        variable_name = node.children[0].leaf
+        # Aquí deberías obtener el valor de `variable_name` de tu contexto de ejecución
+        value = self.get_variable_value(variable_name)
+        print(f"{variable_name} = {value}")
+
+
 
     def analyze_condition(self, node):
-        # Asumiendo que la condición es de tipo booleano
-        actual_type = self.evaluate_expression(node)
-        if actual_type != 'bool':
-            raise SemanticError(f"Error: Se esperaba un tipo booleano en la condición, pero se encontró '{actual_type}'.")
+        cond_type, cond_value = self.evaluate_expression(node)  # Analizar la expresión de la condición
+        if cond_type != 'bool':
+            raise SemanticError(f"Error: Se esperaba un tipo booleano en la condición, pero se encontró '{cond_type}'.")
+        return cond_type, cond_value  # Devuelve el tipo y el valor de la condición
+
+
+
+
+
 

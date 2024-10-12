@@ -87,7 +87,10 @@ def p_sent_if(p):
 def p_else_part(p):
     '''else_part : ELSE bloque
                  | empty'''
-    p[0] = ASTNode('else_part', [p[2]] if len(p) == 3 else [p[1]])
+    if len(p) == 3:  # Hay un bloque else
+        p[0] = ASTNode('else_part', [p[2]])
+    else:  # else está vacío
+        p[0] = ASTNode('else_part', [])
 
 def p_sent_while(p):
     '''sent_while : WHILE LPAREN exp_bool RPAREN bloque'''

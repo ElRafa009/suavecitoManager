@@ -1,0 +1,40 @@
+program{
+int x, a, b, c, y, mas;
+
+a=0;
+x=3;
+y=0;
+b=0;
+c=1;
+
+//los if jalan todo bien y los else 
+if (2>3) then {
+        y = a+3;
+    } else {
+        if (3>2 and 4>3) then {
+            b = 3;
+        } else {
+            b = 5;
+        } fi
+        y = y+1;
+    } fi
+
+    a=a+1;
+    c=c-1;
+    x=3+4;
+
+    //do {
+      //  y=y+1;
+        //while (x>7) { como tal jala el bucle 
+          //   x=x+1;
+            // c=c+1; 
+            //mas=36/7; esta wea no hace nada 
+        //}
+    //} until (y==5);
+
+    //while (y==0) { si jala el while pero el read y write no hace nada 
+      //  read mas;
+        //write x;
+    //}
+
+}
