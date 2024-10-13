@@ -4,6 +4,9 @@ class SemanticError(Exception):
 class SemanticAnalyzer:
     def __init__(self):
         self.symbol_table = {}
+    
+    def get_symbol_table(self):
+        return self.symbol_table
 
     def analyze(self, node):
         print(f"Analizando {node.type}...")  # Mensaje de depuración
@@ -439,9 +442,3 @@ class SemanticAnalyzer:
         if cond_type != 'bool':
             raise SemanticError(f"Error: Se esperaba un tipo booleano en la condición, pero se encontró '{cond_type}'.")
         return cond_type, cond_value  # Devuelve el tipo y el valor de la condición
-
-
-
-
-
-

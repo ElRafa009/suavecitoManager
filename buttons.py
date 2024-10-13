@@ -14,7 +14,7 @@ def resize_image(image_path, width, height):
     images.append(resized_image)  # Mantener referencia global
     return resized_image
 
-def create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_lexico, frame_sintactico, frame_semantico):
+def create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_lexico, frame_sintactico, frame_semantico, frame_symtab):
 
     # Rutas de las imagenes
     img_new_path = os.path.abspath("img/new.png")
@@ -37,7 +37,7 @@ def create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_l
     button_save.pack(side='left', padx=5)
     button_save_as = Button(button_frame, image=img_save_as, command=lambda: guardar_como(root, mensaje, texto))
     button_save_as.pack(side='left', padx=5)
-    button_run = Button(button_frame, image=img_run, command=lambda: run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sintactico, frame_semantico))
+    button_run = Button(button_frame, image=img_run, command=lambda: run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sintactico, frame_semantico, frame_symtab))
     button_run.pack(side='left', padx=5)
 
     

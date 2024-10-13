@@ -88,6 +88,10 @@ def create_editor():
         
     tab_control_analisis.pack(fill='both', expand=True, padx=margen_x, pady=margen_y)
 
+    # Pestaña para Tabla de Simbolos
+    frame_symtab = ttk.Frame(tab_control_analisis)
+    tab_control_analisis.add(frame_symtab, text='Tabla de Simbolos')
+
     # Monitor inferior
     mensaje = StringVar()
     mensaje.set("Bienvenido a Suavecito Compiler")
@@ -118,7 +122,7 @@ def create_editor():
 
     # Menu superior y botones
     create_menu(root, mensaje, texto)
-    create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_lexico, frame_sintactico, frame_semantico)
+    create_buttons(button_frame, root, mensaje, texto, pantalla_errores, frame_lexico, frame_sintactico, frame_semantico, frame_symtab)
 
     # Bucle de la aplicacion
     root.mainloop()

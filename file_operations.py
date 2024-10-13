@@ -4,6 +4,7 @@ from lexer import reset_lexer
 from semantic import SemanticAnalyzer, SemanticError
 from test_lexer import test_lexer
 from sintac import calculate_levels, parse_code, parser
+from symtab import SymbolTable
 
 ruta = "" # La utilizaremos para almacenar la ruta del archivo
 
@@ -70,7 +71,7 @@ def mostrar_mensaje_en_rojo(pantalla_errores, mensaje):
         pantalla_errores.see('end')  # Desplazar la pantalla hacia abajo para mostrar el mensaje más reciente
 
 # Ejecutar análisis léxico sobre el archivo abierto
-def run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sintactico, frame_semantico):
+def run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sintactico, frame_semantico, frame_symtab):
     global ruta
     mensaje.set("Ejecutando análisis léxico...")
     
@@ -94,6 +95,8 @@ def run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sint
         for child in frame_sintactico.winfo_children():
             child.destroy()
         for child in frame_semantico.winfo_children():
+            child.destroy()
+        for child in frame_symtab.winfo_children():
             child.destroy()
 
         # Crear tabla de tokens
@@ -134,12 +137,12 @@ def run_command(root, mensaje, texto, frame_lexico, pantalla_errores, frame_sint
             texto = tokens_to_text(tokens)
 
             # Ejecutar el análisis sintáctico
-            run_syntax_analysis(mensaje, tokens_to_text(tokens), frame_sintactico, pantalla_errores, tokens, frame_semantico)
+            run_syntax_analysis(mensaje, tokens_to_text(tokens), frame_sintactico, pantalla_errores, tokens, frame_semantico, frame_symtab)
 
     else:
         mensaje.set("No hay archivo abierto para ejecutar análisis léxico.")
 
-def run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, tokens, frame_semantico):
+def run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, tokens, frame_semantico, frame_symmtab):
     mensaje.set("Ejecutando análisis sintáctico...")
 
     if tokens:
@@ -172,7 +175,7 @@ def run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, toke
             mensaje.set("Análisis sintáctico completado.")
             # Ejecutar análisis semántico
 
-            run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores)
+            run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores, frame_symmtab, tokens)
         else:
             # Manejo de errores sintácticos
             pantalla_errores.config(state='normal')
@@ -185,7 +188,7 @@ def run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, toke
         mensaje.set("No hay archivo abierto para ejecutar análisis sintáctico.")
 
 # Función para el análisis semántico
-def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores):
+def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores, frame_symtab, tokens):
     mensaje.set("Ejecutando análisis semántico...")
     
     # Crear TreeView para árbol semántico
@@ -216,6 +219,8 @@ def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores):
         # Comenzar a agregar nodos desde la raíz del árbol sintáctico
         add_semantic_nodes(tree, result)
 
+        run_symtab(mensaje, frame_symtab, analyzer.get_symbol_table(), tokens)
+
         mensaje.set("Análisis semántico completado.")
     except SemanticError as e:
         # Manejo de errores semánticos
@@ -230,6 +235,48 @@ def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores):
         for error in errors:
             mostrar_mensaje_en_rojo(pantalla_errores, error)
         pantalla_errores.config(state='disabled')
+
+def run_symtab(mensaje, frame_symtab, symtab_items, tokens):
+    mensaje.set("Imprimiendo Tabla de Simbolos")  
+
+    # Crear TreeView para árbol semántico
+    tree = ttk.Treeview(frame_symtab, columns=('Nombre', 'Tipo', 'Valor', 'loc', 'Lineas'), show='headings')
+    tree.heading('Nombre', text='Nombre')
+    tree.heading('Tipo', text='Tipo')
+    tree.heading('Valor', text='Valor')
+    tree.heading('loc', text='loc')
+    tree.heading('Lineas', text='Lineas')
+    tree.pack(fill='both', expand=True)
+
+    tree.column('Nombre', width=75, anchor='center')
+    tree.column('Tipo', width=25, anchor='center')
+    tree.column('Valor', width=50, anchor='center')
+    tree.column('loc', width=25, anchor='center')
+    tree.column('Lineas', width=75, anchor='center')
+
+    # Inicializar la tabla de símbolos
+    symbol_table = SymbolTable()
+
+    # Insertar los tokens en la tabla
+    loc = 0
+    for var_name, info in symtab_items.items():
+        linenos = []
+        if tokens:
+            for token in tokens:
+                if var_name == token.value:
+                    linenos.append(token.lineno)
+
+        symbol_table.st_insert(var_name, linenos, loc, info['type'], info['value'])
+        loc+=1
+         
+    grouped_symbols = symbol_table.get_sym_tab_grouped()
+
+    # Ahora puedes imprimirlo o usarlo como necesites
+    for symbol in grouped_symbols:
+        #print(f"{symbol['name']:<14} {symbol['location']:<8} {symbol['type']:<6} {symbol['value']:<6} {symbol['lines']}")
+        item_data = (symbol['name'], symbol['type'], symbol['value'], symbol['location'], symbol['lines'])
+        tree.insert('', 'end', values=item_data)
+                
 
 
 def tokens_to_text(tokens):
