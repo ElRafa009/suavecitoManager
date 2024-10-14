@@ -1,5 +1,5 @@
 program{
-int x, a, b, c, y, mas;
+int x, a, b, c, y, mas, paco;
 
 a=0;
 x=3;
@@ -32,9 +32,9 @@ if (2>3) then {
         //}
     //} until (y==5);
 
-    //while (y==0) { si jala el while pero el read y write no hace nada 
+    while (y==0) { //si jala el while pero el read y write no hace nada 
       //  read mas;
-        //write x;
-    //}
+        y = y+1;
+    }
 
 }

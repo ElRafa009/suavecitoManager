@@ -1,9 +1,10 @@
 program {
     int x, y, z;
-    float x, a, b, c, y;
-
-    suma = 45;
-    x = 32.32;
+    //float x, a, b, c, y;
+float a,b,c;
+c=0.0;
+    //suma = 45;
+    //x = 32.32;
     x = 23;
     y = 2+3-1;
     z = y+7;
@@ -12,12 +13,12 @@ program {
     x = (5-3)*(8/2);
     y = 5+3-2*4/7-9;
     z = 8/2+15*4;
-    y = 14.54;
+    //y = 14.54;
 
     if (2>3) then {
         y = a+3;
     } else {
-        if (4>2 and x) then {
+        if (4>2 ) then {
             b = 3.2;
         } else {
             b = 5.0;

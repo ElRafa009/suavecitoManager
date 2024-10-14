@@ -296,10 +296,10 @@ class SemanticAnalyzer:
             if left_value is None:
                 raise SemanticError("Error: Operando izquierdo en operación 'igualdad' no puede ser None.")
             node.semantic_annotation = f"{left_value} ({left_type})"
-
+            
             if len(node.children) > 1:  # Si hay más de un hijo, tenemos una operación de igualdad
                 operator = node.children[1].leaf  # El operador, por ejemplo, '==' o '!='
-                right_type, right_value = self.evaluate_expression(node.children[2])  # Evaluar el operando derecho
+                right_type, right_value = self.evaluate_expression(node.children[2])
                 if right_value is None:
                     raise SemanticError("Error: Operando derecho en operación 'igualdad' no puede ser None.")
 
@@ -308,20 +308,18 @@ class SemanticAnalyzer:
                     raise SemanticError(f"Error: No se puede comparar {left_type} con {right_type}")
 
                 # Realizar la operación de igualdad
-                
                 if operator == '==':
                     result_value = left_value == right_value
                 elif operator == '!=':
                     result_value = left_value != right_value
-                elif operator == '==':
-                    result_value = left_value == right_value
                 else:
                     raise SemanticError(f"Error: Operador desconocido '{operator}'")
-
+                
                 node.semantic_annotation = f"{left_value} {operator} {right_value} = {result_value}"
                 return 'bool', result_value
-
+            
             return 'bool', left_value
+
 
 
         # Si es un nodo 'rel', representa una operación relacional (>, <, >=, <=)
@@ -422,19 +420,33 @@ class SemanticAnalyzer:
 
 
 
-    def analyze_read(self, node):
-        variable_name = node.children[0].leaf
-        value = input(f"Introduzca un valor para {variable_name}: ")
+   # def analyze_read(self, node):
+     #   variable_name = node.children[0].leaf
+      #  value = input(f"Introduzca un valor para {variable_name}: ")
         # Aquí deberías manejar la conversión de `value` al tipo adecuado (int, float, etc.)
         # y almacenarlo en la variable correspondiente en tu contexto de ejecución.
-        self.set_variable_value(variable_name, value)  # Asumiendo que tienes una función para establecer el valor de la variable
+       # self.set_variable_value(variable_name, value)  # Asumiendo que tienes una función para establecer el valor de la variable
 
-    def analyze_write(self, node):
+    def analyze_read(self, node):
+        # Por ahora, no hacer nada o imprimir un mensaje de depuración
         variable_name = node.children[0].leaf
-        # Aquí deberías obtener el valor de `variable_name` de tu contexto de ejecución
-        value = self.get_variable_value(variable_name)
-        print(f"{variable_name} = {value}")
+        print(f"Leyendo variable '{variable_name}' (acción no implementada)")
+        # O también puedes asignar un valor por defecto
+        self.set_variable_value(variable_name, 0)  # Valor por defecto 0
 
+
+    #def analyze_write(self, node):
+     #   variable_name = node.children[0].leaf
+        # Aquí deberías obtener el valor de `variable_name` de tu contexto de ejecución
+      #  value = self.get_variable_value(variable_name)
+       # print(f"{variable_name} = {value}")
+    def analyze_write(self, node):
+        # Por ahora, no hacer nada o imprimir un mensaje de depuración
+        variable_name = node.children[0].leaf
+        print(f"Escribiendo variable '{variable_name}' (acción no implementada)")
+        # O también puedes simular la escritura con un valor por defecto
+        value = self.get_variable_value(variable_name) if variable_name in self.symbol_table else "undefined"
+        print(f"{variable_name} = {value}")
 
 
     def analyze_condition(self, node):

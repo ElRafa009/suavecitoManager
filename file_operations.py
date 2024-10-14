@@ -190,14 +190,36 @@ def run_syntax_analysis(mensaje, texto, frame_sintactico, pantalla_errores, toke
 # Función para el análisis semántico
 def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores, frame_symtab, tokens):
     mensaje.set("Ejecutando análisis semántico...")
-    
+
+    # Crear Frame para TreeView y Scrollbars
+    tree_frame = ttk.Frame(frame_semantico)
+    tree_frame.pack(fill='both', expand=True)
+
     # Crear TreeView para árbol semántico
-    tree = ttk.Treeview(frame_semantico, columns=('Nodo', 'Anotación'), show='headings')
-    tree.heading('Nodo', text='Nodo')
-    tree.heading('Anotación', text='Anotación')
-    tree.pack(fill='both', expand=True)
-    tree.column('Nodo', width=150, anchor='center')
-    tree.column('Anotación', width=150, anchor='center')
+    tree = ttk.Treeview(tree_frame, show='tree')
+    tree.heading('#0', text='Nodo y Anotación')
+    tree.column('#0', width=1500, anchor='w')
+
+    # Crear Scrollbars
+    vsb = ttk.Scrollbar(tree_frame, orient="vertical", command=tree.yview)
+    hsb = ttk.Scrollbar(tree_frame, orient="horizontal", command=lambda *args: tree.xview(*args))
+
+    # Ajustar la velocidad del scroll horizontal
+    tree.configure(yscrollcommand=vsb.set, xscrollcommand=hsb.set)
+    
+    def on_scroll_horizontal(event):
+        tree.xview_scroll(int(-1*(event.delta/60)), "units")  # Aumentar el factor de desplazamiento
+
+    tree.bind("<Shift-MouseWheel>", on_scroll_horizontal)
+
+    # Posicionar TreeView y Scrollbars
+    tree.grid(row=0, column=0, sticky='nsew')
+    vsb.grid(row=0, column=1, sticky='ns')
+    hsb.grid(row=1, column=0, sticky='ew')
+
+    # Configurar expansión del TreeView
+    tree_frame.grid_rowconfigure(0, weight=1)
+    tree_frame.grid_columnconfigure(0, weight=1)
 
     # Crear instancia del analizador semántico
     analyzer = SemanticAnalyzer()
@@ -207,11 +229,13 @@ def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores, fr
         # Realizar análisis semántico
         analyzer.analyze(result)
 
-        # Función para agregar nodos con anotaciones
+        # Función para agregar nodos con anotaciones de manera jerárquica y expandida
         def add_semantic_nodes(tree, node, parent=''):
-            annotation = getattr(node, 'semantic_annotation', "Sin anotación")
-            tree_id = tree.insert(parent, 'end', text=str(node), values=(node.leaf if node.leaf else node.type, annotation), open=True)
-
+            annotation = getattr(node, 'semantic_annotation', None)
+            symbol = node.leaf if node.leaf else ""
+            node_text = f"{node.type} {symbol}: {annotation}" if annotation else f"{node.type} {symbol}"
+            tree_id = tree.insert(parent, 'end', text=node_text, open=True)
+            
             # Propagar las anotaciones a los nodos hijos
             for child in node.children:
                 add_semantic_nodes(tree, child, tree_id)
@@ -220,7 +244,6 @@ def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores, fr
         add_semantic_nodes(tree, result)
 
         run_symtab(mensaje, frame_symtab, analyzer.get_symbol_table(), tokens)
-
         mensaje.set("Análisis semántico completado.")
     except SemanticError as e:
         # Manejo de errores semánticos
@@ -235,6 +258,10 @@ def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores, fr
         for error in errors:
             mostrar_mensaje_en_rojo(pantalla_errores, error)
         pantalla_errores.config(state='disabled')
+
+
+
+
 
 def run_symtab(mensaje, frame_symtab, symtab_items, tokens):
     mensaje.set("Imprimiendo Tabla de Simbolos")  
