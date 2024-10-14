@@ -1,5 +1,9 @@
 class SemanticError(Exception):
-    pass
+    def __init__(self, message, node):
+        super().__init__(message)
+        self.message = message
+        self.node = node
+
 
 class SemanticAnalyzer:
     def __init__(self):
@@ -70,60 +74,46 @@ class SemanticAnalyzer:
             print(f"Tipo de nodo desconocido: {node.type}")
 
     def analyze_declaration(self, node):
-        #print(f"Analizando declaración: {node}")  # Mensaje de depuración
         tipo = node.children[0].leaf  # Tipo de la variable
         list_id = node.children[1]    # Lista de identificadores
 
         def propagate_type(list_id_node):
-            # Si es un nodo de un identificador, lo procesamos
             if list_id_node.type == 'identifier':
                 var_name = list_id_node.leaf
                 if var_name in self.symbol_table:
-                    #print(f"Variable '{var_name}' ya está declarada.")  # Depuración
-                    raise SemanticError(f"Error: La variable '{var_name}' ya está declarada.")
+                    raise SemanticError(f"Error: La variable '{var_name}' ya está declarada.", list_id_node)
                 self.symbol_table[var_name] = {'type': tipo, 'value': None}  # Inicialmente sin valor
                 list_id_node.semantic_annotation = tipo  # Anotar con el tipo
-                #print(f"Anotación semántica añadida a {list_id_node}: {tipo}")  # Mensaje de depuración
             else:
-                # Propagar recursivamente el tipo en la lista de identificadores
                 for child in list_id_node.children:
                     propagate_type(child)
 
-        # Iniciar la propagación del tipo desde la lista de identificadores
         propagate_type(list_id)
 
-        #print(f"Declaración de variables completada con tipo '{tipo}'.")  # Mensaje de depuración
 
     def analyze_assignment(self, node):
         var_name = node.children[0].leaf  # Obtener el nombre de la variable
         expr = node.children[1]  # Obtener la expresión de asignación
-
         # Verificar si la variable está declarada
         if var_name not in self.symbol_table:
-            raise SemanticError(f"Error: La variable '{var_name}' no está declarada.")
-
+            raise SemanticError(f"Error: La variable '{var_name}' no está declarada.", node)
         # Obtener el tipo esperado de la variable
         expected_type = self.symbol_table[var_name]['type']
-
         # Evaluar el tipo y valor de la expresión (esto dependerá de tu implementación de 'evaluate_expression')
         actual_type, value = self.evaluate_expression(expr)
-
         # Verificar si el tipo de la expresión coincide con el tipo esperado
         if expected_type != actual_type:
-            raise SemanticError(f"Error de tipos: Se esperaba '{expected_type}' pero se encontró '{actual_type}'.")
-
+            raise SemanticError(f"Error de tipos: Se esperaba '{expected_type}' pero se encontró '{actual_type}'.", node)
         # Actualizar la tabla de símbolos con el nuevo valor de la variable
         self.symbol_table[var_name]['value'] = value
-
         # Anotar el nodo de asignación con el tipo y valor de la expresión
         node.semantic_annotation = {'type': actual_type, 'value': value}
-
         # Propagar la anotación semántica a la variable
         node.children[0].semantic_annotation = {'type': actual_type, 'value': value}  # Nodo de la variable
         print(f"Asignación correcta: Variable '{var_name}' tiene tipo '{actual_type}' y valor '{value}'.")
-
         # Anotar el nodo de la expresión también, si es necesario
         expr.semantic_annotation = {'type': actual_type, 'value': value}
+
 
 
     def evaluate_expression(self, node):

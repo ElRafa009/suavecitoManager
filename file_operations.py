@@ -206,10 +206,8 @@ def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores, fr
 
     # Ajustar la velocidad del scroll horizontal
     tree.configure(yscrollcommand=vsb.set, xscrollcommand=hsb.set)
-    
     def on_scroll_horizontal(event):
-        tree.xview_scroll(int(-1*(event.delta/60)), "units")  # Aumentar el factor de desplazamiento
-
+        tree.xview_scroll(int(-1*(event.delta/60)), "units")
     tree.bind("<Shift-MouseWheel>", on_scroll_horizontal)
 
     # Posicionar TreeView y Scrollbars
@@ -224,33 +222,35 @@ def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores, fr
     # Crear instancia del analizador semántico
     analyzer = SemanticAnalyzer()
     errors = []  # Lista para almacenar errores semánticos
+    error_nodes = []
 
     try:
         # Realizar análisis semántico
         analyzer.analyze(result)
-
-        # Función para agregar nodos con anotaciones de manera jerárquica y expandida
-        def add_semantic_nodes(tree, node, parent=''):
-            annotation = getattr(node, 'semantic_annotation', None)
-            symbol = node.leaf if node.leaf else ""
-            node_text = f"{node.type} {symbol}: {annotation}" if annotation else f"{node.type} {symbol}"
-            tree_id = tree.insert(parent, 'end', text=node_text, open=True)
-            
-            # Propagar las anotaciones a los nodos hijos
-            for child in node.children:
-                add_semantic_nodes(tree, child, tree_id)
-
-        # Comenzar a agregar nodos desde la raíz del árbol sintáctico
-        add_semantic_nodes(tree, result)
-
-        run_symtab(mensaje, frame_symtab, analyzer.get_symbol_table(), tokens)
-        mensaje.set("Análisis semántico completado.")
     except SemanticError as e:
         # Manejo de errores semánticos
         errors.append(str(e))
-        print(f"Error semántico: {e}")  # Mensaje de depuración
-        mostrar_mensaje_en_rojo(pantalla_errores, str(e))
-        mensaje.set("Errores en análisis semántico.")
+        error_nodes.append(e.node)
+
+    # Función para agregar nodos con anotaciones de manera jerárquica y expandida
+    def add_semantic_nodes(tree, node, parent=''):
+        annotation = getattr(node, 'semantic_annotation', "Sin anotación")
+        symbol = node.leaf if node.leaf else ""
+        node_text = f"{node.type} {symbol}: {annotation}"
+
+        # Añadir anotación de error si el nodo está en la lista de nodos con errores
+        if node in error_nodes:
+            node_text += " [ERROR]"
+
+        tree_id = tree.insert(parent, 'end', text=node_text, open=True)
+
+        # Propagar las anotaciones a los nodos hijos
+        for child in node.children:
+            add_semantic_nodes(tree, child, tree_id)
+
+    # Comenzar a agregar nodos desde la raíz del árbol sintáctico
+    add_semantic_nodes(tree, result)
+    run_symtab(mensaje, frame_symtab, analyzer.get_symbol_table(), tokens)
 
     # Mostrar errores si hay alguno
     if errors:
@@ -258,7 +258,9 @@ def run_semantic_analysis(result, mensaje, frame_semantico, pantalla_errores, fr
         for error in errors:
             mostrar_mensaje_en_rojo(pantalla_errores, error)
         pantalla_errores.config(state='disabled')
-
+        mensaje.set("Errores en análisis semántico.")
+    else:
+        mensaje.set("Análisis semántico completado.")
 
 
 
