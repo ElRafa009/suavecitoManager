@@ -1,0 +1,14 @@
+program {
+// Programa para escribir números en orden inverso
+int A, B, C, D;
+    
+read A;
+read B;
+read C;
+read D;
+    
+write D;
+write C;
+write B;
+write A;
+}

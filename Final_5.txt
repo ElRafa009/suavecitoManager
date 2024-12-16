@@ -1,0 +1,67 @@
+// Programa para analizar lluvias en tres regiones
+// Entrada: Lluvias mensuales en las regiones NORTE, CENTRO y SUR
+// Salidas: 
+// a) Promedio anual de la región CENTRO
+// b) Mes y registro con menor lluvia en la región SUR
+// c) Región con mayor lluvia anual
+
+program{
+    int norte[12], centro[12], sur[12];
+    int i, totalCentro, totalNorte, totalSur;
+    int minSur, mesMinSur, maxRegion;
+    string regionMax;
+
+    // Leer lluvias para cada mes y región
+    i = 0;
+    while (i < 12) {
+        write "Ingrese lluvia para el mes ", i + 1;
+        write " (NORTE): ";
+        read norte[i];
+        write " (CENTRO): ";
+        read centro[i];
+        write " (SUR): ";
+        read sur[i];
+        i = i + 1;
+    }
+
+    // Calcular total anual por región
+    totalCentro = 0;
+    totalNorte = 0;
+    totalSur = 0;
+    i = 0;
+    while (i < 12) {
+        totalCentro = totalCentro + centro[i];
+        totalNorte = totalNorte + norte[i];
+        totalSur = totalSur + sur[i];
+        i = i + 1;
+    }
+
+    // a) Promedio anual de la región CENTRO
+    write "Promedio anual CENTRO: ", totalCentro / 12;
+
+    // b) Mes y registro con menor lluvia en la región SUR
+    minSur = sur[0];
+    mesMinSur = 1;
+    i = 1;
+    while (i < 12) {
+        if (sur[i] < minSur) then{
+            minSur = sur[i];
+            mesMinSur = i + 1;
+        }fi
+        i = i + 1;
+    }
+    write "Mes con menor lluvia en SUR: ", mesMinSur, " con ", minSur;
+
+    // c) Región con mayor lluvia anual
+    maxRegion = totalNorte;
+    regionMax = "NORTE";
+    if (totalCentro > maxRegion) then{
+        maxRegion = totalCentro;
+        regionMax = "CENTRO";
+    }fi
+    if (totalSur > maxRegion) then{
+        maxRegion = totalSur;
+        regionMax = "SUR";
+    }fi
+    write "Región con mayor lluvia anual: ", regionMax, " con ", maxRegion;
+}

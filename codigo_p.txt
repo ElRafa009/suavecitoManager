@@ -1,0 +1,21 @@
+lod A
+lod B
+lod C
+lod D
+lda A
+rdi A
+lda B
+rdi B
+lda C
+rdi C
+lda D
+rdi D
+lod D
+wri
+lod C
+wri
+lod B
+wri
+lod A
+wri
+stp

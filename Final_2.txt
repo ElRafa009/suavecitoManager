@@ -1,0 +1,18 @@
+program {
+    // Programa para determinar si un número es positivo, negativo o nulo
+    int num, result;
+    num = 0;
+    read num;
+    
+    if (num > 0) then {
+        result = 0; // Positivo
+    } else {
+        if (num < 0) then {
+            result = 1; // Negativo
+        } else {
+            result = 2; // Nulo
+        } fi
+    } fi
+
+    write result;
+}

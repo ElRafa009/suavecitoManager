@@ -1,0 +1,31 @@
+// Programa para calcular el término N de la secuencia Fibonacci
+// Entrada: Un número entero N >= 0
+// Salida: Término número N de la secuencia Fibonacci
+
+program{
+read N     // Lee el valor de N
+if (N <= 0) then{
+    write 0 // Si N es 0 o negativo, el resultado es 0
+}else{
+    if (N == 1) then{
+        write 1 // Si N es 1, el resultado es 1
+    }else
+        // Inicializa las variable 
+        int a,b,i,fib;
+        a = 0;
+        b = 1;
+        i = 2;
+        
+
+        // Itera desde 2 hasta N para calcular Fibonacci
+        while (i <= N) }
+            fib = a + b // Calcula el siguiente número
+            a = b       // Actualiza los valores
+            b = fib
+            i = i + 1
+        }
+
+        write fib // Muestra el resultado
+    }fi
+ }fi
+}
